@@ -2,7 +2,20 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Search, Star, ArrowRight, Filter, Gamepad2, Award } from "lucide-react";
+import {
+  Search,
+  Star,
+  ArrowRight,
+  Filter,
+  Gamepad2,
+  Award,
+  Shield,
+  Newspaper,
+  Lock,
+  Bot,
+  Radio,
+  Heart,
+} from "lucide-react";
 import { GAMES_DATA } from "@/lib/data/games-data";
 import { SafetyTopic } from "@/types";
 
@@ -21,6 +34,17 @@ export default function GamesArcadePage() {
     "Kindness & Empathy",
     "Gaming Safety",
   ];
+
+  const getGameIcon = (slug: string) => {
+    if (slug.includes("scam")) return <Search className="w-6 h-6 text-amber-600" />;
+    if (slug.includes("cyberbullying")) return <Shield className="w-6 h-6 text-indigo-600" />;
+    if (slug.includes("fake")) return <Newspaper className="w-6 h-6 text-rose-600" />;
+    if (slug.includes("privacy")) return <Lock className="w-6 h-6 text-emerald-600" />;
+    if (slug.includes("ai")) return <Bot className="w-6 h-6 text-cyan-600" />;
+    if (slug.includes("voice")) return <Radio className="w-6 h-6 text-blue-600" />;
+    if (slug.includes("kindness")) return <Heart className="w-6 h-6 text-pink-600" />;
+    return <Gamepad2 className="w-6 h-6 text-purple-600" />;
+  };
 
   const filteredGames = GAMES_DATA.filter((game) => {
     const matchesTopic =
@@ -87,23 +111,9 @@ export default function GamesArcadePage() {
           >
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-3xl p-3 rounded-2xl bg-clicky-pale border border-clicky-sky/40 shadow-xs">
-                  {game.slug.includes("scam")
-                    ? "🕵️"
-                    : game.slug.includes("cyberbullying")
-                    ? "🛡️"
-                    : game.slug.includes("fake")
-                    ? "📰"
-                    : game.slug.includes("privacy")
-                    ? "🔐"
-                    : game.slug.includes("ai")
-                    ? "🤖"
-                    : game.slug.includes("voice")
-                    ? "🎙️"
-                    : game.slug.includes("kindness")
-                    ? "👑"
-                    : "🎮"}
-                </span>
+                <div className="p-3 rounded-2xl bg-clicky-pale border border-clicky-sky/40 shadow-xs flex items-center justify-center">
+                  {getGameIcon(game.slug)}
+                </div>
                 <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-clicky-yellow/30 text-clicky-navy-dark">
                   ~{game.estimatedMinutes} Mins
                 </span>

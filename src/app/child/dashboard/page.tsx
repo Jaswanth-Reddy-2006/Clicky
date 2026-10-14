@@ -21,6 +21,11 @@ import {
   HeartHandshake,
   ShieldAlert,
   Zap,
+  UsersRound,
+  Radio,
+  Pause,
+  PhoneCall,
+  Heart,
 } from "lucide-react";
 import { Mascot } from "@/components/common/Mascot";
 import { GAMES_DATA } from "@/lib/data/games-data";
@@ -32,35 +37,35 @@ const POWER_UPS = [
     id: "pw-pause",
     name: "Pause Before You Click",
     desc: "Take 3 seconds to examine weird links and sender URLs.",
-    icon: "⏸️",
+    icon: Pause,
     unlocked: true,
   },
   {
     id: "pw-adult",
     name: "Check With a Trusted Adult",
     desc: "Always ask when an app asks for credit cards or money.",
-    icon: "🤝",
+    icon: HeartHandshake,
     unlocked: true,
   },
   {
     id: "pw-password",
     name: "Never Share Passwords",
     desc: "Keep your secret codes locked even from best friends.",
-    icon: "🔐",
+    icon: Lock,
     unlocked: true,
   },
   {
     id: "pw-verify",
     name: "Verify Through Another Channel",
     desc: "Call a family member directly if someone claims an emergency.",
-    icon: "📞",
+    icon: PhoneCall,
     unlocked: true,
   },
   {
     id: "pw-kindness",
     name: "Be Kind Online",
     desc: "Support victims of cyberbullying and don't forward hate.",
-    icon: "💖",
+    icon: Heart,
     unlocked: false,
   },
 ];
@@ -208,7 +213,7 @@ export default function ChildDashboardPage() {
                 Hero Level Progress
               </span>
               <span className="w-7 h-7 rounded-full bg-clicky-yellow/30 text-clicky-navy-dark flex items-center justify-center font-bold text-xs">
-                ⭐
+                <Sparkles className="w-4 h-4 text-clicky-orange" />
               </span>
             </div>
 
@@ -301,7 +306,7 @@ export default function ChildDashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-clicky-yellow text-clicky-navy-dark flex items-center justify-center text-xl font-black shadow-xs">
-              ⚡
+              <Zap className="w-5 h-5 text-clicky-navy-dark" />
             </div>
             <div>
               <span className="text-[11px] font-black uppercase tracking-wider text-amber-800">
@@ -395,42 +400,80 @@ export default function ChildDashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {POWER_UPS.map((pw) => (
-            <div
-              key={pw.id}
-              className={`p-3.5 rounded-2xl border-2 flex flex-col justify-between transition-all ${
-                pw.unlocked
-                  ? "bg-gradient-to-b from-clicky-pale/80 to-white border-clicky-sky/60 shadow-2xs"
-                  : "bg-gray-50 border-dashed border-gray-200 opacity-60"
-              }`}
-            >
-              <div>
-                <span className="text-2xl mb-1.5 block">{pw.icon}</span>
-                <h5 className="font-black text-clicky-navy text-xs leading-snug">
-                  {pw.name}
-                </h5>
-                <p className="text-[11px] text-clicky-muted font-medium mt-1 leading-tight">
-                  {pw.desc}
-                </p>
-              </div>
+          {POWER_UPS.map((pw) => {
+            const Icon = pw.icon;
+            return (
+              <div
+                key={pw.id}
+                className={`p-3.5 rounded-2xl border-2 flex flex-col justify-between transition-all ${
+                  pw.unlocked
+                    ? "bg-gradient-to-b from-clicky-pale/80 to-white border-clicky-sky/60 shadow-2xs"
+                    : "bg-gray-50 border-dashed border-gray-200 opacity-60"
+                }`}
+              >
+                <div>
+                  <div className="w-8 h-8 rounded-xl bg-clicky-yellow/30 flex items-center justify-center text-clicky-navy mb-2 border border-clicky-yellow/40">
+                    <Icon className="w-4 h-4 text-clicky-navy" />
+                  </div>
+                  <h5 className="font-black text-clicky-navy text-xs leading-snug">
+                    {pw.name}
+                  </h5>
+                  <p className="text-[11px] text-clicky-muted font-medium mt-1 leading-tight">
+                    {pw.desc}
+                  </p>
+                </div>
 
-              <div className="mt-3 pt-2 border-t border-gray-100 text-[10px] font-black uppercase">
-                {pw.unlocked ? (
-                  <span className="text-emerald-600">✓ Active Power</span>
-                ) : (
-                  <span className="text-gray-400">🔒 Unlock in Kindness Realm</span>
-                )}
+                <div className="mt-3 pt-2 border-t border-gray-100 text-[10px] font-black uppercase">
+                  {pw.unlocked ? (
+                    <span className="text-emerald-600">✓ Active Power</span>
+                  ) : (
+                    <span className="text-gray-400">Locked in Kingdom</span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
+      </div>
+
+      {/* FEATURE C: SAFE FRIENDS CIRCLE PREVIEW */}
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 text-white shadow-card flex flex-col sm:flex-row items-center justify-between gap-5 border border-indigo-700/60">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shrink-0 shadow-xs">
+            <UsersRound className="w-7 h-7" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase text-indigo-300 tracking-wider">
+                Safe Friends Circle
+              </span>
+              <span className="text-[9px] bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full font-bold">
+                3 Friends Online
+              </span>
+            </div>
+            <h3 className="text-lg font-black text-white leading-snug">
+              Maya & Leo are on active safety streaks!
+            </h3>
+            <p className="text-xs text-indigo-200 font-medium mt-0.5">
+              Send an encouragement cheer sticker or accept friend quests in your Safe Friends Circle.
+            </p>
+          </div>
+        </div>
+
+        <Link
+          href="/child/friends"
+          className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-white hover:bg-slate-100 text-indigo-950 font-black text-xs sm:text-sm shrink-0 flex items-center justify-center gap-2 shadow-sm transition-all"
+        >
+          <span>Open Friends Circle</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
 
       {/* Recommended Next Mission Banner */}
       <div className="p-5 sm:p-6 rounded-3xl bg-white border border-clicky-border shadow-card flex flex-col sm:flex-row items-center justify-between gap-5">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-clicky-pale border border-clicky-sky/40 flex items-center justify-center text-3xl shrink-0 shadow-xs">
-            🎙️
+          <div className="w-14 h-14 rounded-2xl bg-clicky-pale border border-clicky-sky/40 flex items-center justify-center text-clicky-navy shrink-0 shadow-xs">
+            <Radio className="w-7 h-7 text-clicky-navy" />
           </div>
           <div>
             <span className="text-[10px] font-black uppercase text-clicky-orange tracking-wider">

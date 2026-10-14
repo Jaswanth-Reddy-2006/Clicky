@@ -34,6 +34,102 @@ export interface ScenarioOption {
   nextScenarioId?: string; // For branching
 }
 
+export type GameplayMode =
+  | "CLUE_INSPECTION"
+  | "RESPONSE_ASSEMBLY"
+  | "EVIDENCE_INVESTIGATION"
+  | "PERMISSION_CONFIG"
+  | "AI_PROMPT_LAB"
+  | "AUDIO_VOICE_VERIFY"
+  | "BRANCHING_NARRATIVE"
+  | "INVENTORY_TRADE_GUARD"
+  | "DECISION_CHOICE";
+
+export interface ScenarioInteractiveData {
+  mode: GameplayMode;
+  // Mode 1: CLUE_INSPECTION (Scam Detective)
+  inspectableElements?: {
+    id: string;
+    label: string;
+    text: string;
+    isSuspicious: boolean;
+    feedback: string;
+  }[];
+  // Mode 2: RESPONSE_ASSEMBLY (Cyberbullying Heroes)
+  responseBlocks?: {
+    id: string;
+    text: string;
+    category: "support" | "boundary" | "de-escalate" | "harmful";
+    isSafe: boolean;
+  }[];
+  targetResponseGoal?: string;
+  // Mode 3: EVIDENCE_INVESTIGATION (Fake or Fact)
+  evidenceCards?: {
+    id: string;
+    title: string;
+    source: string;
+    reliability: "HIGH" | "SUSPICIOUS" | "FAKE";
+    details: string;
+    isVerified: boolean;
+  }[];
+  // Mode 4: PERMISSION_CONFIG (Privacy Protector)
+  permissionToggles?: {
+    id: string;
+    name: string;
+    iconName: string;
+    requested: boolean;
+    isNecessary: boolean;
+    riskExplanation: string;
+  }[];
+  // Mode 5: AI_PROMPT_LAB (Safe AI Explorer)
+  promptTokens?: {
+    id: string;
+    text: string;
+    isSafe: boolean;
+    reason?: string;
+  }[];
+  aiResponseChecks?: {
+    claim: string;
+    isAccurate: boolean;
+    explanation: string;
+  }[];
+  // Mode 6: AUDIO_VOICE_VERIFY (VoiceGuard Rescue)
+  audioAnalysis?: {
+    callerName: string;
+    voiceSampleDuration: string;
+    waveformType: "synthetic_jitter" | "natural_authentic";
+    suspiciousClues: string[];
+    safeWordPrompt: string;
+    expectedSafeWord: string;
+    providedOptions: string[];
+  };
+  // Mode 7: BRANCHING_NARRATIVE (Kindness Kingdom)
+  dialogueBranches?: {
+    step: number;
+    situation: string;
+    speaker: string;
+    choices: {
+      id: string;
+      text: string;
+      empathyDelta: number;
+      reactionText: string;
+      nextStep?: number;
+    }[];
+  }[];
+  // Mode 8: INVENTORY_TRADE_GUARD (Gamer Safety Quest)
+  tradeItems?: {
+    id: string;
+    name: string;
+    rarity: string;
+    icon: string;
+    isSafe: boolean;
+    description: string;
+    redFlag?: string;
+  }[];
+  tradeLink?: string;
+  isTradeSuspicious?: boolean;
+}
+
 export interface Scenario {
   id: string;
   gameSlug: string;
@@ -50,6 +146,7 @@ export interface Scenario {
   xpReward: number;
   difficulty: "EASY" | "MEDIUM" | "CHALLENGING";
   topic: SafetyTopic;
+  interactiveData?: ScenarioInteractiveData;
 }
 
 export type SafetyTopic =
@@ -70,6 +167,7 @@ export interface GameDefinition {
   description: string;
   topic: SafetyTopic;
   iconName: string;
+  gameplayMode?: GameplayMode;
   colorScheme: {
     primary: string;
     secondary: string;
@@ -183,3 +281,54 @@ export interface ParentOverviewData {
     xpEarned: number;
   }[];
 }
+
+export interface Friend {
+  id: string;
+  name: string;
+  handle: string;
+  avatar: string;
+  level: number;
+  levelTitle: string;
+  badgeCount: number;
+  currentStreak: number;
+  status: "online" | "exploring" | "offline";
+  lastActiveAt: string;
+  friendshipDate: string;
+  mutualAdventures: number;
+}
+
+export interface FriendCodeRecord {
+  id: string;
+  code: string;
+  childProfileId: string;
+  createdAt: string;
+  expiresAt: string;
+  usedCount: number;
+  maxUses: number;
+}
+
+export interface FriendChallenge {
+  id: string;
+  fromFriendId: string;
+  fromFriendName: string;
+  fromFriendAvatar: string;
+  toChildId: string;
+  gameSlug: string;
+  gameTitle: string;
+  targetScore: number;
+  xpReward: number;
+  status: "PENDING" | "ACCEPTED" | "COMPLETED";
+  createdAt: string;
+  completedAt?: string;
+}
+
+export interface PredefinedReaction {
+  id: string;
+  fromFriendId: string;
+  fromFriendName: string;
+  toFriendId: string;
+  text: string;
+  icon: string;
+  timestamp: string;
+}
+

@@ -12,6 +12,13 @@ import {
   CheckCircle2,
   Lock,
   ChevronRight,
+  Search,
+  Shield,
+  Newspaper,
+  Bot,
+  Radio,
+  Heart,
+  Gamepad2,
 } from "lucide-react";
 import { GAMES_DATA } from "@/lib/data/games-data";
 import { playSound } from "@/lib/utils";
@@ -43,14 +50,14 @@ export default function AdventuresMapPage() {
   };
 
   const worldVisuals = [
-    { icon: "🕵️", badgeBg: "bg-amber-100", stars: 3, status: "Mastered" },
-    { icon: "🛡️", badgeBg: "bg-indigo-100", stars: 2, status: "In Progress" },
-    { icon: "📰", badgeBg: "bg-red-100", stars: 2, status: "In Progress" },
-    { icon: "🔐", badgeBg: "bg-emerald-100", stars: 3, status: "Mastered" },
-    { icon: "🤖", badgeBg: "bg-cyan-100", stars: 2, status: "In Progress" },
-    { icon: "📻", badgeBg: "bg-blue-100", stars: 1, status: "Practice Needed" },
-    { icon: "💖", badgeBg: "bg-rose-100", stars: 3, status: "Mastered" },
-    { icon: "🕹️", badgeBg: "bg-purple-100", stars: 2, status: "In Progress" },
+    { icon: Search, badgeBg: "bg-amber-100 text-amber-700", stars: 3, status: "Mastered" },
+    { icon: Shield, badgeBg: "bg-indigo-100 text-indigo-700", stars: 2, status: "In Progress" },
+    { icon: Newspaper, badgeBg: "bg-red-100 text-red-700", stars: 2, status: "In Progress" },
+    { icon: Lock, badgeBg: "bg-emerald-100 text-emerald-700", stars: 3, status: "Mastered" },
+    { icon: Bot, badgeBg: "bg-cyan-100 text-cyan-700", stars: 2, status: "In Progress" },
+    { icon: Radio, badgeBg: "bg-blue-100 text-blue-700", stars: 1, status: "Practice Needed" },
+    { icon: Heart, badgeBg: "bg-rose-100 text-rose-700", stars: 3, status: "Mastered" },
+    { icon: Gamepad2, badgeBg: "bg-purple-100 text-purple-700", stars: 2, status: "In Progress" },
   ];
 
   return (
@@ -101,8 +108,8 @@ export default function AdventuresMapPage() {
             >
               {/* Left Side: Realm Icon & Details */}
               <div className="flex items-start sm:items-center gap-4">
-                <div className={`w-16 h-16 rounded-3xl ${vis.badgeBg} border border-clicky-border/80 flex items-center justify-center text-3xl shrink-0 shadow-xs group-hover:scale-105 transition-transform`}>
-                  {vis.icon}
+                <div className={`w-16 h-16 rounded-3xl ${vis.badgeBg} border border-clicky-border/80 flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform`}>
+                  <vis.icon className="w-8 h-8" />
                 </div>
 
                 <div>

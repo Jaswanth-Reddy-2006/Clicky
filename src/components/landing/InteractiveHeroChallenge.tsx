@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   AlertTriangle,
   Lightbulb,
+  Mail,
 } from "lucide-react";
 import { Mascot } from "../common/Mascot";
 import { playSound } from "@/lib/utils";
@@ -89,8 +90,9 @@ export const InteractiveHeroChallenge: React.FC = () => {
 
       {/* Challenge Scenario Prompt */}
       <div className="p-3.5 rounded-2xl bg-clicky-pale/80 border border-clicky-sky/40 mb-4">
-        <div className="text-[11px] font-black uppercase tracking-wider text-clicky-navy/70 mb-1 flex items-center gap-1">
-          <span>📨 Mystery Message Received:</span>
+        <div className="text-[11px] font-black uppercase tracking-wider text-clicky-navy/70 mb-1 flex items-center gap-1.5">
+          <Mail className="w-3.5 h-3.5 text-clicky-orange" />
+          <span>Mystery Message Received:</span>
         </div>
         <p className="text-sm sm:text-base font-black text-clicky-navy leading-snug">
           &ldquo;You found a message offering 10,000 free game coins. It asks you to click a strange link. What should you do?&rdquo;

@@ -20,6 +20,14 @@ import { GameDefinition, ScenarioOption } from "@/types";
 import { Mascot } from "../common/Mascot";
 import { RewardCelebration } from "./RewardCelebration";
 import { playSound } from "@/lib/utils";
+import { ClueInspectorGame } from "./modes/ClueInspectorGame";
+import { ChatSimulationGame } from "./modes/ChatSimulationGame";
+import { EvidenceBoardGame } from "./modes/EvidenceBoardGame";
+import { PrivacyLabGame } from "./modes/PrivacyLabGame";
+import { AILabGame } from "./modes/AILabGame";
+import { VoiceRescueGame } from "./modes/VoiceRescueGame";
+import { KindnessStoryGame } from "./modes/KindnessStoryGame";
+import { GamerInventoryGame } from "./modes/GamerInventoryGame";
 
 interface GameEngineProps {
   game: GameDefinition;
@@ -236,6 +244,39 @@ export const GameEngine: React.FC<GameEngineProps> = ({
 
   const chosenOption = scenario.options.find((o) => o.id === selectedOptionId);
 
+  const renderInteractiveMode = () => {
+    const commonProps = {
+      scenario,
+      selectedOptionId,
+      hasSubmitted,
+      onSelectOption: handleSelectOption,
+      onConfirm: handleConfirmAnswer,
+    };
+
+    switch (game.slug) {
+      case "scam-detective":
+        return <ClueInspectorGame {...commonProps} />;
+      case "cyberbullying-heroes":
+        return <ChatSimulationGame {...commonProps} />;
+      case "fake-or-fact":
+        return <EvidenceBoardGame {...commonProps} />;
+      case "privacy-protector":
+        return <PrivacyLabGame {...commonProps} />;
+      case "safe-ai-explorer":
+        return <AILabGame {...commonProps} />;
+      case "voiceguard-rescue":
+        return <VoiceRescueGame {...commonProps} />;
+      case "kindness-kingdom":
+        return <KindnessStoryGame {...commonProps} />;
+      case "gamer-safety-quest":
+        return <GamerInventoryGame {...commonProps} />;
+      default:
+        return null;
+    }
+  };
+
+  const interactiveModeComponent = renderInteractiveMode();
+
   return (
     <div className="max-w-3xl mx-auto py-4 px-3 sm:px-6 space-y-4">
       {/* Top Header Navigation Bar */}
@@ -251,7 +292,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
         {/* Progress Tracker */}
         <div className="flex-1 max-w-xs">
           <div className="flex justify-between text-xs font-bold text-clicky-navy mb-1">
-            <span>Scenario {currentIndex + 1} of {game.totalScenarios}</span>
+            <span>Mission {currentIndex + 1} of {game.totalScenarios}</span>
             <span className="text-clicky-orange font-black">+{accumulatedXp} XP</span>
           </div>
           <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
@@ -269,171 +310,10 @@ export const GameEngine: React.FC<GameEngineProps> = ({
         </span>
       </div>
 
-      {/* Main Themed Scenario Card */}
-      <motion.div
-        key={scenario.id}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
-        className="bg-white rounded-3xl border-2 border-clicky-border shadow-card overflow-hidden"
-      >
-        {/* Themed Atmosphere Card Header */}
-        <div className={`bg-gradient-to-r ${theme.headerGradient} text-white p-5 sm:p-6 relative overflow-hidden`}>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-black tracking-wider uppercase text-clicky-yellow flex items-center gap-1.5">
-              <span>{theme.badgeIcon}</span>
-              <span>{game.title} • Mission #{currentIndex + 1}</span>
-            </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white font-bold text-[11px] border border-white/20">
-              {scenario.difficulty}
-            </span>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-black text-white leading-tight">
-            {scenario.title}
-          </h2>
-          <p className="text-gray-200 text-xs sm:text-sm mt-1.5 font-medium leading-relaxed">
-            {scenario.prompt}
-          </p>
-        </div>
-
-        {/* Fictional Message / Dialogue Box */}
-        {scenario.characterMessage && (
-          <div className="p-5 sm:p-6 bg-clicky-bg/70 border-b border-clicky-border/60">
-            <div className="flex items-start gap-3 bg-white p-4 rounded-2xl border-2 border-dashed border-clicky-sky/60 shadow-xs">
-              <div className="w-12 h-12 rounded-2xl bg-clicky-pale text-2xl flex items-center justify-center shrink-0 shadow-xs border border-clicky-sky/40">
-                {scenario.characterAvatar || "💬"}
-              </div>
-              <div className="flex-1">
-                <div className="text-xs font-extrabold text-clicky-navy flex items-center justify-between">
-                  <span>{scenario.characterName || "Incoming Message"}</span>
-                  <span className="text-[10px] text-gray-400 font-medium bg-gray-100 px-2 py-0.5 rounded-full">
-                    Simulation
-                  </span>
-                </div>
-                <p className="text-clicky-text text-sm font-semibold mt-1 leading-relaxed bg-amber-50/60 p-2.5 rounded-xl border border-amber-200/80">
-                  {scenario.characterMessage}
-                </p>
-              </div>
-            </div>
-
-            {/* Clue & Red Flags Button */}
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  playSound("click");
-                  setShowClue(!showClue);
-                }}
-                className="text-xs font-bold text-clicky-navy hover:text-clicky-orange flex items-center gap-1.5 transition-colors"
-              >
-                <Lightbulb className="w-4 h-4 text-clicky-yellow fill-clicky-yellow" />
-                <span>{showClue ? "Hide Detective Clue" : "Inspect Detective Clue"}</span>
-              </button>
-
-              {scenario.redFlags && scenario.redFlags.length > 0 && (
-                <span className="text-[11px] text-clicky-muted font-bold flex items-center gap-1">
-                  <Flag className="w-3.5 h-3.5 text-clicky-orange" />
-                  <span>{scenario.redFlags.length} Red Flags Present</span>
-                </span>
-              )}
-            </div>
-
-            {/* Expanded Clue & Red Flags Drawer */}
-            <AnimatePresence>
-              {showClue && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mt-3 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-2 overflow-hidden"
-                >
-                  <p className="font-bold flex items-center gap-1.5">
-                    <span>💡 Clue:</span>
-                    <span>{scenario.clue}</span>
-                  </p>
-                  {scenario.redFlags && (
-                    <div>
-                      <span className="font-extrabold text-[11px] uppercase tracking-wide text-amber-800">
-                        Notice these warning signs:
-                      </span>
-                      <ul className="list-disc list-inside mt-1 space-y-0.5 text-amber-950 font-medium">
-                        {scenario.redFlags.map((flag, idx) => (
-                          <li key={idx}>{flag}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
-
-        {/* Options Section */}
-        <div className="p-5 sm:p-6 space-y-3">
-          <h3 className="text-xs font-black text-clicky-navy uppercase tracking-wider mb-2">
-            What is the safest decision?
-          </h3>
-
-          <div className="space-y-2.5">
-            {scenario.options.map((option, idx) => {
-              const isSelected = selectedOptionId === option.id;
-              const isCorrect = option.isCorrect;
-
-              let cardStyle = "bg-white border-clicky-border hover:border-clicky-navy hover:bg-clicky-pale/40 text-clicky-text";
-
-              if (hasSubmitted) {
-                if (isCorrect) {
-                  cardStyle = "bg-emerald-50 border-emerald-400 text-emerald-950 ring-2 ring-emerald-300 font-bold";
-                } else if (isSelected && !isCorrect) {
-                  cardStyle = "bg-red-50 border-red-300 text-red-950 font-bold";
-                } else {
-                  cardStyle = "bg-gray-50 border-gray-200 opacity-60 text-gray-500";
-                }
-              } else if (isSelected) {
-                cardStyle = "bg-clicky-pale border-clicky-navy ring-2 ring-clicky-navy shadow-xs font-semibold";
-              }
-
-              return (
-                <button
-                  key={option.id}
-                  onClick={() => handleSelectOption(option)}
-                  disabled={hasSubmitted}
-                  className={`w-full p-4 rounded-2xl border-2 text-left text-xs sm:text-sm transition-all flex items-start gap-3 shadow-2xs ${cardStyle}`}
-                >
-                  <span
-                    className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs shrink-0 shadow-2xs ${
-                      hasSubmitted && isCorrect
-                        ? "bg-emerald-500 text-white"
-                        : hasSubmitted && isSelected && !isCorrect
-                        ? "bg-red-500 text-white"
-                        : isSelected
-                        ? "bg-clicky-navy text-white"
-                        : "bg-white border border-gray-300 text-clicky-navy"
-                    }`}
-                  >
-                    {String.fromCharCode(65 + idx)}
-                  </span>
-                  <span className="flex-1 pt-0.5 leading-snug">{option.text}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Confirm Decision Button (before submit) */}
-          {!hasSubmitted && (
-            <div className="pt-3">
-              <button
-                type="button"
-                onClick={handleConfirmAnswer}
-                disabled={!selectedOptionId}
-                className="w-full py-3.5 rounded-2xl bg-clicky-orange hover:bg-clicky-orange-hover disabled:opacity-50 text-white font-black text-sm shadow-fun-orange active:translate-y-1 transition-all flex items-center justify-center gap-2"
-              >
-                <span>Confirm Decision</span>
-                <CheckCircle2 className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+      {/* Main Gameplay Viewport */}
+      {interactiveModeComponent ? (
+        <div className="space-y-4">
+          {interactiveModeComponent}
 
           {/* Feedback & Learning Lesson (after submit) */}
           <AnimatePresence>
@@ -441,7 +321,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`mt-4 p-4 rounded-2xl border-2 ${
+                className={`p-5 rounded-3xl border-2 shadow-card ${
                   chosenOption.isCorrect
                     ? "bg-emerald-50 border-emerald-300 text-emerald-950"
                     : "bg-amber-50 border-amber-300 text-amber-950"
@@ -460,7 +340,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
                       {chosenOption.isCorrect ? (
                         <>
                           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                          <span className="text-emerald-700">Excellent Choice! (+{scenario.xpReward} XP)</span>
+                          <span className="text-emerald-700">Excellent Decision! (+{scenario.xpReward} XP)</span>
                         </>
                       ) : (
                         <>
@@ -481,10 +361,10 @@ export const GameEngine: React.FC<GameEngineProps> = ({
                       <button
                         type="button"
                         onClick={handleNext}
-                        className="w-full py-3 rounded-xl bg-clicky-navy hover:bg-clicky-navy-dark text-white font-black text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2"
+                        className="w-full py-3.5 rounded-2xl bg-clicky-navy hover:bg-clicky-navy-dark text-white font-black text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2"
                       >
                         <span>
-                          {currentIndex + 1 < game.scenarios.length ? "Next Scenario" : "Complete Mission"}
+                          {currentIndex + 1 < game.scenarios.length ? "Next Mission Scenario" : "Complete Mission Realm"}
                         </span>
                         <ArrowRight className="w-4 h-4" />
                       </button>
@@ -495,7 +375,70 @@ export const GameEngine: React.FC<GameEngineProps> = ({
             )}
           </AnimatePresence>
         </div>
-      </motion.div>
+      ) : (
+        /* Fallback Scenario Card */
+        <motion.div
+          key={scenario.id}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className="bg-white rounded-3xl border-2 border-clicky-border shadow-card overflow-hidden"
+        >
+          <div className={`bg-gradient-to-r ${theme.headerGradient} text-white p-5 sm:p-6 relative overflow-hidden`}>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-black tracking-wider uppercase text-clicky-yellow flex items-center gap-1.5">
+                <span>{theme.badgeIcon}</span>
+                <span>{game.title} • Mission #{currentIndex + 1}</span>
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white font-bold text-[11px] border border-white/20">
+                {scenario.difficulty}
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-white leading-tight">
+              {scenario.title}
+            </h2>
+            <p className="text-gray-200 text-xs sm:text-sm mt-1.5 font-medium leading-relaxed">
+              {scenario.prompt}
+            </p>
+          </div>
+
+          <div className="p-5 sm:p-6 space-y-3">
+            <div className="space-y-2.5">
+              {scenario.options.map((option, idx) => (
+                <button
+                  key={option.id}
+                  onClick={() => handleSelectOption(option)}
+                  disabled={hasSubmitted}
+                  className={`w-full p-4 rounded-2xl border-2 text-left text-xs sm:text-sm transition-all flex items-start gap-3 shadow-2xs ${
+                    selectedOptionId === option.id
+                      ? "bg-clicky-pale border-clicky-navy"
+                      : "bg-white border-clicky-border"
+                  }`}
+                >
+                  <span className="w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs shrink-0">
+                    {String.fromCharCode(65 + idx)}
+                  </span>
+                  <span className="flex-1 pt-0.5 leading-snug">{option.text}</span>
+                </button>
+              ))}
+            </div>
+
+            {!hasSubmitted && (
+              <div className="pt-3">
+                <button
+                  type="button"
+                  onClick={handleConfirmAnswer}
+                  disabled={!selectedOptionId}
+                  className="w-full py-3.5 rounded-2xl bg-clicky-orange text-white font-black text-sm"
+                >
+                  Confirm Decision
+                </button>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };
+

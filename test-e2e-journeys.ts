@@ -119,6 +119,35 @@ async function runE2EJourneys() {
   const redeemInvalid = demoStore.redeemPairingCode("INVALID-9999", "profile-alex-demo");
   assert(redeemInvalid.success === false, "Invalid code successfully rejected");
 
+  // --- JOURNEY G: SAFE FRIENDS CIRCLE & ASYNCHRONOUS CHALLENGES ---
+  console.log("\n--- Journey G: Safe Friends Circle & Positive Social Engagement ---");
+  const initialFriends = demoStore.getFriends("profile-alex-demo");
+  assert(initialFriends.length >= 3, "Alex has seeded demo friends for social safety learning");
+
+  // Expiring code generation
+  const activeCode = demoStore.getActiveFriendCode("profile-alex-demo");
+  assert(activeCode.code.startsWith("HERO-"), "Active friend code format is verified");
+
+  // Connect new demo friend
+  const redeemDemoFriend = demoStore.redeemFriendCode("STAR-77", "profile-alex-demo");
+  assert(redeemDemoFriend.success === true || redeemDemoFriend.message.includes("already friends"), "Redeemed valid demo friend code");
+
+  // Asynchronous challenge acceptance
+  const initialChallenges = demoStore.getFriendChallenges("profile-alex-demo");
+  assert(initialChallenges.length > 0, "Alex has pending safety challenges from friends");
+  const accepted = demoStore.acceptFriendChallenge(initialChallenges[0].id);
+  assert(accepted === true, "Challenge accepted for asynchronous safety competition");
+
+  // Predefined positive reaction dispatch (COPPA-safe encouragement)
+  const cheer = demoStore.sendFriendReaction(
+    "profile-alex-demo",
+    "friend-maya-demo",
+    "🌟 Awesome learning streak!",
+    "🌟"
+  );
+  assert(cheer.fromFriendName === "Alex", "Cheer properly associated with child sender");
+  assert(cheer.text === "🌟 Awesome learning streak!", "Predefined encouragement text recorded without unrestricted open chat");
+
   // --- SUMMARY ---
   console.log(`\n========================================`);
   console.log(`E2E JOURNEY RESULTS: ${passCount} PASSED, ${failCount} FAILED`);
@@ -128,3 +157,4 @@ async function runE2EJourneys() {
 }
 
 runE2EJourneys();
+

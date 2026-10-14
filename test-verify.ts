@@ -107,5 +107,45 @@ assert(redeemSuccess.success === true, "Pairing code redeemed successfully");
 const redeemReused = demoStore.redeemPairingCode(pairing.code, childProfile!.id);
 assert(redeemReused.success === false, "Reused pairing code rejected");
 
+// 7. Verify Safe Friends System & Demo Friends
+const alexFriends = demoStore.getFriends(childProfile!.id);
+assert(alexFriends.length >= 3, `Alex has at least 3 seeded safe demo friends (actual: ${alexFriends.length})`);
+assert(alexFriends.some((f) => f.handle === "CyberWolf"), "Leo (CyberWolf) is present in friends list");
+assert(alexFriends.some((f) => f.handle === "PixelPanda"), "Maya (PixelPanda) is present in friends list");
+assert(alexFriends.some((f) => f.handle === "StarCoder"), "Sam (StarCoder) is present in friends list");
+
+// 8. Verify Expiring Friend Code Lifecycle
+const activeFriendCode = demoStore.getActiveFriendCode(childProfile!.id);
+assert(activeFriendCode.code.startsWith("HERO-"), "Active friend code has HERO- prefix");
+assert(new Date(activeFriendCode.expiresAt) > new Date(), "Friend code has future expiration timestamp");
+
+const newFriendCode = demoStore.generateFriendCode(childProfile!.id);
+assert(newFriendCode.code.startsWith("HERO-"), "Generated new unique friend code");
+
+// 9. Verify Friend Code Redemption
+const friendRedeemSuccess = demoStore.redeemFriendCode("WOLF-42", childProfile!.id);
+assert(
+  friendRedeemSuccess.success === true || friendRedeemSuccess.message.includes("already friends"),
+  "Demo friend code redeem handles valid connection"
+);
+
+const friendRedeemInvalid = demoStore.redeemFriendCode("XYZ-000", childProfile!.id);
+assert(friendRedeemInvalid.success === false, "Unrecognized friend code rejected cleanly");
+
+// 10. Verify Predefined Encouragement Reactions & Asynchronous Challenges
+const challenges = demoStore.getFriendChallenges(childProfile!.id);
+assert(challenges.length >= 1, "Child has pending asynchronous friend challenges");
+const challengeAccepted = demoStore.acceptFriendChallenge(challenges[0].id);
+assert(challengeAccepted === true, "Friend challenge accepted successfully");
+
+const cheerSent = demoStore.sendFriendReaction(
+  childProfile!.id,
+  "friend-maya-demo",
+  "Great detective work on that fake gem link!",
+  "🌟"
+);
+assert(cheerSent.text.length > 0 && cheerSent.icon === "🌟", "Safe predefined cheer dispatched");
+
 console.log(`\n=== VERIFICATION RESULTS: ${passed} PASSED, ${failed} FAILED ===`);
 if (failed > 0) process.exit(1);
+

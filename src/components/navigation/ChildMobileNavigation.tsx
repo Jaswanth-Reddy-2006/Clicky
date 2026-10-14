@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, Gamepad2, Bot, Award } from "lucide-react";
+import { Home, Compass, Gamepad2, Bot, Award, Sparkles, UsersRound } from "lucide-react";
 import { AppLogo } from "../common/AppLogo";
 import { SoundToggle } from "../common/SoundToggle";
 
@@ -12,8 +12,8 @@ export const ChildMobileHeader: React.FC<{ xp?: number }> = ({ xp = 480 }) => {
     <header className="md:hidden flex items-center justify-between px-4 py-2.5 bg-white border-b border-clicky-border sticky top-8 z-40 shadow-xs">
       <AppLogo size="sm" href="/child/dashboard" showSubtitle={false} />
       <div className="flex items-center gap-2">
-        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-clicky-yellow/20 border border-clicky-yellow/50 text-clicky-navy-dark text-xs font-black">
-          <span>⭐</span>
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-clicky-yellow/20 border border-clicky-yellow/50 text-clicky-navy-dark text-xs font-black">
+          <Sparkles className="w-3.5 h-3.5 text-clicky-orange fill-clicky-orange" />
           <span>{xp} XP</span>
         </div>
         <SoundToggle className="!p-1.5" />
@@ -27,9 +27,9 @@ export const ChildMobileNavigation: React.FC = () => {
 
   const links = [
     { href: "/child/dashboard", label: "Home", icon: Home },
-    { href: "/child/adventures", label: "Quests", icon: Compass },
     { href: "/child/games", label: "Arcade", icon: Gamepad2 },
     { href: "/child/kindbot", label: "KindBot", icon: Bot, isCenter: true },
+    { href: "/child/friends", label: "Friends", icon: UsersRound },
     { href: "/child/achievements", label: "Badges", icon: Award },
   ];
 

@@ -7,6 +7,10 @@ import {
   PairingCodeRecord,
   ParentOverviewData,
   SafetyTopic,
+  Friend,
+  FriendCodeRecord,
+  FriendChallenge,
+  PredefinedReaction,
 } from "@/types";
 import { ACHIEVEMENTS_DATA } from "@/lib/data/achievements-data";
 import { GAMES_DATA } from "@/lib/data/games-data";
@@ -173,6 +177,115 @@ const INITIAL_PAIRING_CODES: PairingCodeRecord[] = [
   },
 ];
 
+const INITIAL_FRIENDS: Record<string, Friend[]> = {
+  "profile-alex-demo": [
+    {
+      id: "friend-leo-demo",
+      name: "Leo",
+      handle: "CyberWolf",
+      avatar: "cyber-wolf",
+      level: 4,
+      levelTitle: "Safety Champion",
+      badgeCount: 6,
+      currentStreak: 5,
+      status: "online",
+      lastActiveAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+      friendshipDate: "2026-09-10T14:00:00Z",
+      mutualAdventures: 8,
+    },
+    {
+      id: "friend-maya-demo",
+      name: "Maya",
+      handle: "PixelPanda",
+      avatar: "pixel-panda",
+      level: 3,
+      levelTitle: "Cyber Guardian",
+      badgeCount: 5,
+      currentStreak: 7,
+      status: "exploring",
+      lastActiveAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+      friendshipDate: "2026-09-15T09:30:00Z",
+      mutualAdventures: 5,
+    },
+    {
+      id: "friend-sam-demo",
+      name: "Sam",
+      handle: "StarCoder",
+      avatar: "star-coder",
+      level: 2,
+      levelTitle: "Safety Scout",
+      badgeCount: 3,
+      currentStreak: 2,
+      status: "offline",
+      lastActiveAt: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
+      friendshipDate: "2026-09-20T11:15:00Z",
+      mutualAdventures: 3,
+    },
+  ],
+};
+
+const INITIAL_FRIEND_CODES: FriendCodeRecord[] = [
+  {
+    id: "fcode-alex-1",
+    code: "HERO-4921",
+    childProfileId: "profile-alex-demo",
+    createdAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 86400000).toISOString(),
+    usedCount: 0,
+    maxUses: 3,
+  },
+];
+
+const INITIAL_FRIEND_CHALLENGES: FriendChallenge[] = [
+  {
+    id: "chal-1",
+    fromFriendId: "friend-maya-demo",
+    fromFriendName: "Maya (PixelPanda)",
+    fromFriendAvatar: "pixel-panda",
+    toChildId: "profile-alex-demo",
+    gameSlug: "scam-detective",
+    gameTitle: "Scam Detective",
+    targetScore: 90,
+    xpReward: 50,
+    status: "PENDING",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+  },
+  {
+    id: "chal-2",
+    fromFriendId: "friend-leo-demo",
+    fromFriendName: "Leo (CyberWolf)",
+    fromFriendAvatar: "cyber-wolf",
+    toChildId: "profile-alex-demo",
+    gameSlug: "gamer-safety-quest",
+    gameTitle: "Gamer Safety Quest",
+    targetScore: 85,
+    xpReward: 60,
+    status: "PENDING",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+  },
+];
+
+const INITIAL_PREDEFINED_REACTIONS: PredefinedReaction[] = [
+  {
+    id: "react-1",
+    fromFriendId: "friend-maya-demo",
+    fromFriendName: "Maya",
+    toFriendId: "profile-alex-demo",
+    text: "Great detective work on that fake gem link!",
+    icon: "🌟",
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
+  },
+  {
+    id: "react-2",
+    fromFriendId: "friend-leo-demo",
+    fromFriendName: "Leo",
+    toFriendId: "profile-alex-demo",
+    text: "3-day safety streak! Keep it going!",
+    icon: "🔥",
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
+  },
+];
+
 // In-Memory state for Server/Edge functions
 let users = [...INITIAL_USERS];
 let childProfiles = [...INITIAL_CHILD_PROFILES];
@@ -180,6 +293,10 @@ let topicProgress = { ...INITIAL_TOPIC_PROGRESS };
 let unlockedAchievements = { ...INITIAL_UNLOCKED_ACHIEVEMENTS };
 let recommendations = { ...INITIAL_RECOMMENDATIONS };
 let pairingCodes = [...INITIAL_PAIRING_CODES];
+let friendsMap = { ...INITIAL_FRIENDS };
+let friendCodes = [...INITIAL_FRIEND_CODES];
+let friendChallenges = [...INITIAL_FRIEND_CHALLENGES];
+let friendReactions = [...INITIAL_PREDEFINED_REACTIONS];
 let completedGamesHistory: {
   id: string;
   childProfileId: string;
@@ -479,6 +596,234 @@ export const demoStore = {
     };
   },
 
+  getFriends: (childProfileId: string = "profile-alex-demo"): Friend[] => {
+    return friendsMap[childProfileId] || [];
+  },
+
+  getFriendCodes: (childProfileId: string = "profile-alex-demo"): FriendCodeRecord[] => {
+    return friendCodes.filter((fc) => fc.childProfileId === childProfileId);
+  },
+
+  getActiveFriendCode: (childProfileId: string = "profile-alex-demo"): FriendCodeRecord => {
+    const existing = friendCodes.find(
+      (fc) =>
+        fc.childProfileId === childProfileId &&
+        new Date(fc.expiresAt) > new Date() &&
+        fc.usedCount < fc.maxUses
+    );
+    if (existing) return existing;
+
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let codeStr = "HERO-";
+    for (let i = 0; i < 4; i++) {
+      codeStr += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    const newCode: FriendCodeRecord = {
+      id: `fcode-${Date.now()}`,
+      code: codeStr,
+      childProfileId,
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 86400000).toISOString(),
+      usedCount: 0,
+      maxUses: 3,
+    };
+    friendCodes.unshift(newCode);
+    return newCode;
+  },
+
+  generateFriendCode: (childProfileId: string): FriendCodeRecord => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let codeStr = "HERO-";
+    for (let i = 0; i < 4; i++) {
+      codeStr += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    const newCode: FriendCodeRecord = {
+      id: `fcode-${Date.now()}`,
+      code: codeStr,
+      childProfileId,
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 86400000).toISOString(),
+      usedCount: 0,
+      maxUses: 3,
+    };
+    friendCodes.unshift(newCode);
+    return newCode;
+  },
+
+  redeemFriendCode: (
+    rawCode: string,
+    childProfileId: string = "profile-alex-demo"
+  ): { success: boolean; message: string; friend?: Friend } => {
+    const code = rawCode.trim().toUpperCase();
+    if (!code) {
+      return { success: false, message: "Please enter a valid friend code." };
+    }
+
+    const demoCatalog: Record<string, Friend> = {
+      "PANDA-88": {
+        id: "friend-maya-extra",
+        name: "Maya",
+        handle: "PixelPanda",
+        avatar: "pixel-panda",
+        level: 3,
+        levelTitle: "Cyber Guardian",
+        badgeCount: 5,
+        currentStreak: 7,
+        status: "online",
+        lastActiveAt: new Date().toISOString(),
+        friendshipDate: new Date().toISOString(),
+        mutualAdventures: 5,
+      },
+      "WOLF-42": {
+        id: "friend-leo-extra",
+        name: "Leo",
+        handle: "CyberWolf",
+        avatar: "cyber-wolf",
+        level: 4,
+        levelTitle: "Safety Champion",
+        badgeCount: 6,
+        currentStreak: 5,
+        status: "online",
+        lastActiveAt: new Date().toISOString(),
+        friendshipDate: new Date().toISOString(),
+        mutualAdventures: 8,
+      },
+      "STAR-77": {
+        id: "friend-sam-extra",
+        name: "Sam",
+        handle: "StarCoder",
+        avatar: "star-coder",
+        level: 2,
+        levelTitle: "Safety Scout",
+        badgeCount: 3,
+        currentStreak: 2,
+        status: "exploring",
+        lastActiveAt: new Date().toISOString(),
+        friendshipDate: new Date().toISOString(),
+        mutualAdventures: 3,
+      },
+      "ROBOT-99": {
+        id: "friend-kai-extra",
+        name: "Kai",
+        handle: "ByteBuddy",
+        avatar: "robot-shield",
+        level: 5,
+        levelTitle: "Digital Sentinel",
+        badgeCount: 8,
+        currentStreak: 12,
+        status: "online",
+        lastActiveAt: new Date().toISOString(),
+        friendshipDate: new Date().toISOString(),
+        mutualAdventures: 10,
+      },
+    };
+
+    const foundCodeRecord = friendCodes.find((fc) => fc.code === code);
+    if (foundCodeRecord) {
+      if (foundCodeRecord.childProfileId === childProfileId) {
+        return { success: false, message: "You cannot add yourself as a friend!" };
+      }
+      if (new Date(foundCodeRecord.expiresAt) < new Date()) {
+        return { success: false, message: "This friend code has expired. Request a new one!" };
+      }
+      if (foundCodeRecord.usedCount >= foundCodeRecord.maxUses) {
+        return { success: false, message: "This friend code has reached its maximum connections." };
+      }
+      foundCodeRecord.usedCount++;
+      const newFriend: Friend = {
+        id: `friend-${Date.now()}`,
+        name: "Avery",
+        handle: "CyberFalcon",
+        avatar: "falcon-shield",
+        level: 3,
+        levelTitle: "Cyber Guardian",
+        badgeCount: 4,
+        currentStreak: 4,
+        status: "online",
+        lastActiveAt: new Date().toISOString(),
+        friendshipDate: new Date().toISOString(),
+        mutualAdventures: 2,
+      };
+      if (!friendsMap[childProfileId]) friendsMap[childProfileId] = [];
+      friendsMap[childProfileId].push(newFriend);
+      return { success: true, message: `Connected with Avery (@CyberFalcon)!`, friend: newFriend };
+    }
+
+    if (demoCatalog[code]) {
+      const template = demoCatalog[code];
+      const currentList = friendsMap[childProfileId] || [];
+      const alreadyFriend = currentList.some((f) => f.handle.toLowerCase() === template.handle.toLowerCase());
+      if (alreadyFriend) {
+        return { success: false, message: `You are already friends with ${template.name} (@${template.handle})!` };
+      }
+      const newFriend = { ...template, id: `friend-${Date.now()}`, friendshipDate: new Date().toISOString() };
+      if (!friendsMap[childProfileId]) friendsMap[childProfileId] = [];
+      friendsMap[childProfileId].push(newFriend);
+      return { success: true, message: `Connected with ${newFriend.name} (@${newFriend.handle})!`, friend: newFriend };
+    }
+
+    if ((code.startsWith("HERO-") || code.startsWith("SAFE-")) && code.length >= 8) {
+      const newFriend: Friend = {
+        id: `friend-${Date.now()}`,
+        name: "Robin",
+        handle: `EchoHero${code.replace(/[^0-9]/g, "").slice(-3) || "9"}`,
+        avatar: "pixel-panda",
+        level: 2,
+        levelTitle: "Safety Scout",
+        badgeCount: 3,
+        currentStreak: 3,
+        status: "online",
+        lastActiveAt: new Date().toISOString(),
+        friendshipDate: new Date().toISOString(),
+        mutualAdventures: 1,
+      };
+      if (!friendsMap[childProfileId]) friendsMap[childProfileId] = [];
+      friendsMap[childProfileId].push(newFriend);
+      return { success: true, message: `Connected with ${newFriend.name} (@${newFriend.handle})!`, friend: newFriend };
+    }
+
+    return { success: false, message: "Friend code not recognized. Try HERO-4921, PANDA-88, or WOLF-42." };
+  },
+
+  getFriendChallenges: (childProfileId: string = "profile-alex-demo"): FriendChallenge[] => {
+    return friendChallenges.filter((fc) => fc.toChildId === childProfileId);
+  },
+
+  acceptFriendChallenge: (challengeId: string): boolean => {
+    const chal = friendChallenges.find((c) => c.id === challengeId);
+    if (chal) {
+      chal.status = "ACCEPTED";
+      return true;
+    }
+    return false;
+  },
+
+  getFriendReactions: (childProfileId: string = "profile-alex-demo"): PredefinedReaction[] => {
+    return friendReactions.filter((r) => r.toFriendId === childProfileId);
+  },
+
+  sendFriendReaction: (
+    fromChildId: string = "profile-alex-demo",
+    toFriendId: string,
+    reactionText: string,
+    icon: string
+  ): PredefinedReaction => {
+    const child = childProfiles.find((c) => c.id === fromChildId);
+    const newReaction: PredefinedReaction = {
+      id: `react-${Date.now()}`,
+      fromFriendId: fromChildId,
+      fromFriendName: child?.name?.split(" ")[0] || "Alex",
+      toFriendId,
+      text: reactionText,
+      icon,
+      timestamp: new Date().toISOString(),
+    };
+    friendReactions.unshift(newReaction);
+    return newReaction;
+  },
+
   resetDemoData: () => {
     users = [...INITIAL_USERS];
     childProfiles = [...INITIAL_CHILD_PROFILES];
@@ -486,6 +831,10 @@ export const demoStore = {
     unlockedAchievements = { ...INITIAL_UNLOCKED_ACHIEVEMENTS };
     recommendations = { ...INITIAL_RECOMMENDATIONS };
     pairingCodes = [...INITIAL_PAIRING_CODES];
+    friendsMap = { ...INITIAL_FRIENDS };
+    friendCodes = [...INITIAL_FRIEND_CODES];
+    friendChallenges = [...INITIAL_FRIEND_CHALLENGES];
+    friendReactions = [...INITIAL_PREDEFINED_REACTIONS];
     return true;
   },
 };

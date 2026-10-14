@@ -15,6 +15,8 @@ import {
   LogOut,
   Flame,
   Sparkles,
+  UsersRound,
+  Shield,
 } from "lucide-react";
 import { AppLogo } from "../common/AppLogo";
 import { getLevelProgress } from "@/lib/utils";
@@ -42,6 +44,7 @@ export const ChildSidebar: React.FC<ChildSidebarProps> = ({
     { href: "/child/dashboard", label: "Home", icon: Home },
     { href: "/child/adventures", label: "Adventures", icon: Compass },
     { href: "/child/games", label: "Game Arcade", icon: Gamepad2 },
+    { href: "/child/friends", label: "Friends Circle", icon: UsersRound },
     { href: "/child/kindbot", label: "KindBot AI", icon: Bot, highlight: true },
     { href: "/child/progress", label: "My Progress", icon: TrendingUp },
     { href: "/child/achievements", label: "My Badges", icon: Award },
@@ -67,7 +70,7 @@ export const ChildSidebar: React.FC<ChildSidebarProps> = ({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-2xl bg-clicky-yellow/30 flex items-center justify-center font-bold text-clicky-navy text-lg shadow-sm">
-              🛡️
+              <Shield className="w-5 h-5 text-clicky-navy" />
             </div>
             <div>
               <h4 className="font-extrabold text-clicky-navy text-sm leading-tight">

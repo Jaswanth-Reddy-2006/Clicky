@@ -156,7 +156,7 @@ export default function ParentDashboardPage() {
           </span>
           <div className="flex items-center gap-3 mt-2">
             <div className="w-10 h-10 rounded-xl bg-clicky-pale text-clicky-navy text-xl flex items-center justify-center font-bold">
-              🛡️
+              <ShieldCheck className="w-5 h-5 text-clicky-navy" />
             </div>
             <div>
               <h4 className="font-black text-gray-900 text-sm">{child?.name}</h4>
