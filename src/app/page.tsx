@@ -30,6 +30,12 @@ import {
   CheckCircle2,
   PhoneCall,
   ShieldAlert,
+  Newspaper,
+  Lightbulb,
+  Ban,
+  User,
+  Palette,
+  Cloud,
 } from "lucide-react";
 import { AppLogo } from "@/components/common/AppLogo";
 import { Mascot } from "@/components/common/Mascot";
@@ -195,14 +201,14 @@ export default function LandingPage() {
       {/* SECTION 1: HERO & INTERACTIVE CHALLENGE */}
       <section className="relative overflow-hidden pt-8 pb-16 sm:py-20 lg:py-24 bg-gradient-to-b from-clicky-navy via-clicky-navy to-clicky-navy-dark text-white">
         {/* Floating Cartoon Background Elements */}
-        <div className="absolute top-12 left-10 text-clicky-sky/30 text-5xl select-none animate-float pointer-events-none">
-          ☁️
+        <div className="absolute top-12 left-10 text-clicky-sky/30 select-none animate-float pointer-events-none">
+          <Cloud className="w-16 h-16 opacity-30" />
         </div>
-        <div className="absolute top-20 right-16 text-clicky-yellow/40 text-4xl select-none animate-pulse-subtle pointer-events-none">
-          ⭐
+        <div className="absolute top-20 right-16 text-clicky-yellow/40 select-none animate-pulse-subtle pointer-events-none">
+          <Star className="w-12 h-12 fill-clicky-yellow/30 opacity-40" />
         </div>
-        <div className="absolute bottom-16 left-1/3 text-clicky-mint/30 text-3xl select-none animate-float pointer-events-none">
-          ✨
+        <div className="absolute bottom-16 left-1/3 text-clicky-mint/30 select-none animate-float pointer-events-none">
+          <Sparkles className="w-10 h-10 opacity-30" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -287,7 +293,8 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {GAMES_DATA.map((game, idx) => {
-              const icons = ["🕵️", "🛡️", "📰", "🔐", "🤖", "📻", "👑", "🕹️"];
+              const gameIcons = [Search, Shield, Newspaper, Lock, Bot, Radio, Heart, Gamepad2];
+              const GameCardIcon = gameIcons[idx] || Gamepad2;
               return (
                 <div
                   key={game.slug}
@@ -295,9 +302,9 @@ export default function LandingPage() {
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-3xl p-3 rounded-2xl bg-white border border-clicky-border shadow-xs">
-                        {icons[idx]}
-                      </span>
+                      <div className="p-3 rounded-2xl bg-white border border-clicky-border shadow-xs text-clicky-navy">
+                        <GameCardIcon className="w-6 h-6 text-clicky-navy" />
+                      </div>
                       <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-clicky-yellow/30 text-clicky-navy-dark border border-clicky-yellow/40">
                         {game.totalScenarios} Scenarios
                       </span>
@@ -501,8 +508,8 @@ export default function LandingPage() {
                 {/* Sample Exchange */}
                 <div className="space-y-3">
                   <div className="flex items-start gap-2.5 flex-row-reverse text-right">
-                    <div className="w-7 h-7 rounded-full bg-clicky-navy text-white flex items-center justify-center text-xs font-black shrink-0">
-                      👧
+                    <div className="w-7 h-7 rounded-full bg-clicky-navy text-white flex items-center justify-center text-xs font-black shrink-0 shadow-2xs">
+                      <User className="w-4 h-4 text-white" />
                     </div>
                     <div className="bg-clicky-navy text-white p-3 rounded-2xl rounded-tr-none text-xs font-semibold max-w-[80%]">
                       &ldquo;Someone in my game chat asked where I live and offered free skins. What should I do?&rdquo;
@@ -552,8 +559,8 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card text-center">
-              <div className="w-14 h-14 rounded-2xl bg-clicky-yellow-pale text-3xl flex items-center justify-center mx-auto mb-3 border border-clicky-yellow/60">
-                ⭐
+              <div className="w-14 h-14 rounded-2xl bg-clicky-yellow-pale flex items-center justify-center mx-auto mb-3 border border-clicky-yellow/60 text-clicky-navy">
+                <Star className="w-7 h-7 text-clicky-yellow fill-clicky-yellow" />
               </div>
               <h4 className="font-black text-clicky-navy text-lg mb-1">XP & Level Ranks</h4>
               <p className="text-xs text-clicky-muted font-medium">
@@ -562,8 +569,8 @@ export default function LandingPage() {
             </div>
 
             <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card text-center">
-              <div className="w-14 h-14 rounded-2xl bg-orange-100 text-3xl flex items-center justify-center mx-auto mb-3 border border-orange-200">
-                🔥
+              <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center mx-auto mb-3 border border-orange-200 text-orange-600">
+                <Flame className="w-7 h-7 text-orange-500 fill-orange-500" />
               </div>
               <h4 className="font-black text-clicky-navy text-lg mb-1">Daily Safety Streaks</h4>
               <p className="text-xs text-clicky-muted font-medium">
@@ -572,8 +579,8 @@ export default function LandingPage() {
             </div>
 
             <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card text-center">
-              <div className="w-14 h-14 rounded-2xl bg-clicky-pale text-3xl flex items-center justify-center mx-auto mb-3 border border-clicky-sky/40">
-                🏆
+              <div className="w-14 h-14 rounded-2xl bg-clicky-pale flex items-center justify-center mx-auto mb-3 border border-clicky-sky/40 text-clicky-navy">
+                <Award className="w-7 h-7 text-clicky-navy" />
               </div>
               <h4 className="font-black text-clicky-navy text-lg mb-1">13 Collectible Badges</h4>
               <p className="text-xs text-clicky-muted font-medium">
@@ -582,8 +589,8 @@ export default function LandingPage() {
             </div>
 
             <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card text-center">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-3xl flex items-center justify-center mx-auto mb-3 border border-emerald-200">
-                🎩
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-3 border border-emerald-200 text-emerald-700">
+                <Palette className="w-7 h-7 text-emerald-600" />
               </div>
               <h4 className="font-black text-clicky-navy text-lg mb-1">Mascot Customization</h4>
               <p className="text-xs text-clicky-muted font-medium">
@@ -695,8 +702,9 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-white border border-gray-200 text-xs text-gray-700 font-medium">
-                  <strong>💡 Practice Suggestion:</strong> Try VoiceGuard Rescue scenario 2 together to practice choosing a secret family verification word!
+                <div className="p-3.5 rounded-2xl bg-white border border-gray-200 text-xs text-gray-700 font-medium flex items-center gap-2">
+                  <Lightbulb className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span><strong>Practice Suggestion:</strong> Try VoiceGuard Rescue scenario 2 together to practice choosing a secret family verification word!</span>
                 </div>
               </div>
             </div>
@@ -722,46 +730,49 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-clicky-navy text-white flex items-center justify-center text-xl mb-4">
-                  🔒
+                <div className="w-12 h-12 rounded-2xl bg-clicky-navy text-clicky-yellow flex items-center justify-center mb-4 shadow-xs">
+                  <Lock className="w-6 h-6 text-clicky-yellow" />
                 </div>
                 <h4 className="text-lg font-black text-clicky-navy mb-2">COPPA & Privacy First</h4>
                 <p className="text-xs text-clicky-muted font-medium leading-relaxed">
                   We never require children to provide real names, birthdays, home addresses, or phone numbers. Avatars and nicknames only.
                 </p>
               </div>
-              <span className="mt-4 pt-3 border-t border-gray-100 text-[11px] font-bold text-emerald-600">
-                ✓ Fully compliant
+              <span className="mt-4 pt-3 border-t border-gray-100 text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Fully compliant</span>
               </span>
             </div>
 
             <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-clicky-navy text-white flex items-center justify-center text-xl mb-4">
-                  🚫
+                <div className="w-12 h-12 rounded-2xl bg-clicky-navy text-rose-400 flex items-center justify-center mb-4 shadow-xs">
+                  <Ban className="w-6 h-6 text-rose-400" />
                 </div>
                 <h4 className="text-lg font-black text-clicky-navy mb-2">No Open Stranger Chats</h4>
                 <p className="text-xs text-clicky-muted font-medium leading-relaxed">
                   There are zero live public multiplayer chatrooms. All social situations are pre-scripted educational simulations.
                 </p>
               </div>
-              <span className="mt-4 pt-3 border-t border-gray-100 text-[11px] font-bold text-emerald-600">
-                ✓ 100% walled garden
+              <span className="mt-4 pt-3 border-t border-gray-100 text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>100% walled garden</span>
               </span>
             </div>
 
             <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-clicky-navy text-white flex items-center justify-center text-xl mb-4">
-                  🛡️
+                <div className="w-12 h-12 rounded-2xl bg-clicky-navy text-emerald-400 flex items-center justify-center mb-4 shadow-xs">
+                  <Shield className="w-6 h-6 text-emerald-400" />
                 </div>
                 <h4 className="text-lg font-black text-clicky-navy mb-2">Zero Third-Party Advertising</h4>
                 <p className="text-xs text-clicky-muted font-medium leading-relaxed">
                   No ad networks, no tracking cookies, and no behavioral targeting. Educational content is always completely ad-free.
                 </p>
               </div>
-              <span className="mt-4 pt-3 border-t border-gray-100 text-[11px] font-bold text-emerald-600">
-                ✓ No marketing trackers
+              <span className="mt-4 pt-3 border-t border-gray-100 text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>No marketing trackers</span>
               </span>
             </div>
           </div>

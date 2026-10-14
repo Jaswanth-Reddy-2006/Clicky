@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { User, ShieldCheck, Star, Flame, CheckCircle, Save, Sparkles, Palette, Crown } from "lucide-react";
+import { User, ShieldCheck, Star, Flame, CheckCircle, Save, Sparkles, Palette, Crown, Shield, Search, Eye, Compass } from "lucide-react";
 import { Mascot } from "@/components/common/Mascot";
 import { playSound } from "@/lib/utils";
 
@@ -23,11 +23,11 @@ export default function ChildProfilePage() {
   }, []);
 
   const accessories = [
-    { id: "none", label: "Classic Shield", icon: "🛡️" },
-    { id: "detective-cap", label: "Detective Cap", icon: "🕵️" },
-    { id: "superhero-cape", label: "Hero Cape", icon: "🦸" },
-    { id: "cyber-goggles", label: "Cyber Visor", icon: "🥽" },
-    { id: "space-helmet", label: "Cosmic Dome", icon: "🚀" },
+    { id: "none", label: "Classic Shield", icon: Shield },
+    { id: "detective-cap", label: "Detective Cap", icon: Search },
+    { id: "superhero-cape", label: "Hero Cape", icon: Sparkles },
+    { id: "cyber-goggles", label: "Cyber Visor", icon: Eye },
+    { id: "space-helmet", label: "Cosmic Dome", icon: Compass },
   ];
 
   const colorThemes = [
@@ -123,26 +123,31 @@ export default function ChildProfilePage() {
               <span>Select Mascot Headgear & Gear</span>
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-              {accessories.map((acc) => (
-                <button
-                  key={acc.id}
-                  type="button"
-                  onClick={() => {
-                    playSound("click");
-                    setAccessory(acc.id as any);
-                  }}
-                  className={`p-3.5 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all ${
-                    accessory === acc.id
-                      ? "bg-clicky-yellow-pale border-clicky-navy ring-2 ring-clicky-yellow scale-105 shadow-xs"
-                      : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-                  }`}
-                >
-                  <span className="text-2xl">{acc.icon}</span>
-                  <span className="text-xs font-black text-clicky-navy text-center">
-                    {acc.label}
-                  </span>
-                </button>
-              ))}
+              {accessories.map((acc) => {
+                const AccIcon = acc.icon;
+                return (
+                  <button
+                    key={acc.id}
+                    type="button"
+                    onClick={() => {
+                      playSound("click");
+                      setAccessory(acc.id as any);
+                    }}
+                    className={`p-3.5 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all ${
+                      accessory === acc.id
+                        ? "bg-clicky-yellow-pale border-clicky-navy ring-2 ring-clicky-yellow scale-105 shadow-xs"
+                        : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+                    }`}
+                  >
+                    <div className="w-8 h-8 rounded-xl bg-clicky-pale text-clicky-navy flex items-center justify-center">
+                      <AccIcon className="w-5 h-5 text-clicky-navy" />
+                    </div>
+                    <span className="text-xs font-black text-clicky-navy text-center">
+                      {acc.label}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

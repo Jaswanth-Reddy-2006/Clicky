@@ -15,6 +15,13 @@ import {
   Flag,
   Sparkles,
   Zap,
+  Search,
+  Newspaper,
+  Lock,
+  Bot,
+  Radio,
+  Heart,
+  Gamepad2,
 } from "lucide-react";
 import { GameDefinition, ScenarioOption } from "@/types";
 import { Mascot } from "../common/Mascot";
@@ -40,7 +47,7 @@ const GAME_THEMES: Record<
   {
     headerGradient: string;
     badgeLabel: string;
-    badgeIcon: string;
+    badgeIcon: React.ElementType;
     badgeBg: string;
     atmosphereName: string;
     accentColor: string;
@@ -49,7 +56,7 @@ const GAME_THEMES: Record<
   "scam-detective": {
     headerGradient: "from-[#1E293B] via-[#334155] to-[#0F172A]",
     badgeLabel: "Detective HQ • Investigation Unit",
-    badgeIcon: "🕵️",
+    badgeIcon: Search,
     badgeBg: "bg-amber-500/20 text-amber-300 border-amber-500/40",
     atmosphereName: "Crime Lab & Scam Dossier",
     accentColor: "border-amber-400",
@@ -57,7 +64,7 @@ const GAME_THEMES: Record<
   "cyberbullying-heroes": {
     headerGradient: "from-[#312E81] via-[#4338CA] to-[#1E1B4B]",
     badgeLabel: "Hero Squad • Empathy Shield",
-    badgeIcon: "🛡️",
+    badgeIcon: Shield,
     badgeBg: "bg-indigo-500/20 text-indigo-300 border-indigo-500/40",
     atmosphereName: "Kindness Citadel & Support Center",
     accentColor: "border-indigo-400",
@@ -65,7 +72,7 @@ const GAME_THEMES: Record<
   "fake-or-fact": {
     headerGradient: "from-[#881337] via-[#9F1239] to-[#4C0519]",
     badgeLabel: "Newsroom Press Desk • Fact Check",
-    badgeIcon: "📰",
+    badgeIcon: Newspaper,
     badgeBg: "bg-rose-500/20 text-rose-300 border-rose-500/40",
     atmosphereName: "Investigative Newsroom Bureau",
     accentColor: "border-rose-400",
@@ -73,7 +80,7 @@ const GAME_THEMES: Record<
   "privacy-protector": {
     headerGradient: "from-[#064E3B] via-[#047857] to-[#022C22]",
     badgeLabel: "Digital Vault • Security Terminal",
-    badgeIcon: "🔐",
+    badgeIcon: Lock,
     badgeBg: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
     atmosphereName: "High-Security Data Vault",
     accentColor: "border-emerald-400",
@@ -81,7 +88,7 @@ const GAME_THEMES: Record<
   "safe-ai-explorer": {
     headerGradient: "from-[#0F172A] via-[#0E7490] to-[#083344]",
     badgeLabel: "Future AI Lab • Robot Safety",
-    badgeIcon: "🤖",
+    badgeIcon: Bot,
     badgeBg: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40",
     atmosphereName: "Cybernetic Neural Testing Facility",
     accentColor: "border-cyan-400",
@@ -89,7 +96,7 @@ const GAME_THEMES: Record<
   "voiceguard-rescue": {
     headerGradient: "from-[#1E3A8A] via-[#1D4ED8] to-[#172554]",
     badgeLabel: "Telecom Dispatch • Voice Analysis",
-    badgeIcon: "📻",
+    badgeIcon: Radio,
     badgeBg: "bg-blue-500/20 text-blue-300 border-blue-500/40",
     atmosphereName: "Audio Forensics Communications Unit",
     accentColor: "border-blue-400",
@@ -97,7 +104,7 @@ const GAME_THEMES: Record<
   "kindness-kingdom": {
     headerGradient: "from-[#831843] via-[#BE185D] to-[#500724]",
     badgeLabel: "Kindness Realm • Social Citadel",
-    badgeIcon: "💖",
+    badgeIcon: Heart,
     badgeBg: "bg-pink-500/20 text-pink-300 border-pink-500/40",
     atmosphereName: "Empathy Sanctuary & Community Courtyard",
     accentColor: "border-pink-400",
@@ -105,7 +112,7 @@ const GAME_THEMES: Record<
   "gamer-safety-quest": {
     headerGradient: "from-[#3B0764] via-[#581C87] to-[#2E1065]",
     badgeLabel: "Pixel Arcade • Inventory & Trade",
-    badgeIcon: "🕹️",
+    badgeIcon: Gamepad2,
     badgeBg: "bg-purple-500/20 text-purple-300 border-purple-500/40",
     atmosphereName: "Arcade Chamber & Quest Marketplace",
     accentColor: "border-purple-400",
@@ -137,7 +144,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
     GAME_THEMES[game.slug] || {
       headerGradient: "from-clicky-navy via-clicky-navy to-clicky-navy-dark",
       badgeLabel: game.theme,
-      badgeIcon: "🛡️",
+      badgeIcon: Shield,
       badgeBg: "bg-white/20 text-white border-white/30",
       atmosphereName: game.title,
       accentColor: "border-clicky-yellow",
@@ -304,10 +311,15 @@ export const GameEngine: React.FC<GameEngineProps> = ({
         </div>
 
         {/* Themed Atmosphere Badge */}
-        <span className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black border ${theme.badgeBg}`}>
-          <span>{theme.badgeIcon}</span>
-          <span>{theme.badgeLabel.split("•")[0]}</span>
-        </span>
+        {(() => {
+          const ThemeIcon = theme.badgeIcon;
+          return (
+            <span className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black border ${theme.badgeBg}`}>
+              <ThemeIcon className="w-3.5 h-3.5" />
+              <span>{theme.badgeLabel.split("•")[0]}</span>
+            </span>
+          );
+        })()}
       </div>
 
       {/* Main Gameplay Viewport */}
@@ -353,8 +365,11 @@ export const GameEngine: React.FC<GameEngineProps> = ({
                       {chosenOption.feedback}
                     </p>
 
-                    <div className="mt-2 pt-2 border-t border-current/20 text-xs font-bold">
-                      <strong>💡 Safety Takeaway:</strong> {chosenOption.safetyLesson}
+                    <div className="mt-2 pt-2 border-t border-current/20 text-xs font-bold flex items-start gap-1.5">
+                      <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-amber-900">Safety Takeaway:</strong> {chosenOption.safetyLesson}
+                      </div>
                     </div>
 
                     <div className="pt-3">
@@ -387,7 +402,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
           <div className={`bg-gradient-to-r ${theme.headerGradient} text-white p-5 sm:p-6 relative overflow-hidden`}>
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-black tracking-wider uppercase text-clicky-yellow flex items-center gap-1.5">
-                <span>{theme.badgeIcon}</span>
+                <theme.badgeIcon className="w-3.5 h-3.5" />
                 <span>{game.title} • Mission #{currentIndex + 1}</span>
               </span>
               <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white font-bold text-[11px] border border-white/20">

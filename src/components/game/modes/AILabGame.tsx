@@ -11,6 +11,8 @@ import {
   Cpu,
   HelpCircle,
   Check,
+  Search,
+  AlertTriangle,
 } from "lucide-react";
 import { Scenario, ScenarioOption } from "@/types";
 import { playSound } from "@/lib/utils";
@@ -147,14 +149,15 @@ export const AILabGame: React.FC<AILabGameProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  playSound("click");
+                  playSound("clue");
                   setInspectedClaim(
-                    "⚠️ Hallucination Alert: AI models often sound very confident even when inventing completely impossible facts. Always double-check homework with real textbooks or teachers!"
+                    "Hallucination Alert: AI models often sound very confident even when inventing completely impossible facts. Always double-check homework with real textbooks or teachers!"
                   );
                 }}
-                className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold transition-colors"
               >
-                🔎 Test Accuracy of Claim
+                <Search className="w-3.5 h-3.5 text-amber-300" />
+                <span>Test Accuracy of Claim</span>
               </button>
             </div>
 

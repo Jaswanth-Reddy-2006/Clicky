@@ -14,6 +14,7 @@ import {
   Activity,
   PhoneCall,
   Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 import { Scenario, ScenarioOption } from "@/types";
 import { playSound } from "@/lib/utils";
@@ -43,12 +44,12 @@ export const VoiceRescueGame: React.FC<VoiceRescueGameProps> = ({
   };
 
   const handleRunScan = () => {
-    playSound("click");
+    playSound("clue");
     setScanRevealed(true);
   };
 
   const handleTestSafeWord = () => {
-    playSound("click");
+    playSound("clue");
     setSafeWordTested(true);
   };
 
@@ -157,8 +158,9 @@ export const VoiceRescueGame: React.FC<VoiceRescueGameProps> = ({
               </span>
             </div>
             {scanRevealed ? (
-              <p className="text-[11px] text-amber-300 font-medium">
-                🚩 Synthesizer Artifacts Detected! Unnatural speech cadence and synthetic background noise match AI voice-cloning software.
+              <p className="text-[11px] text-amber-300 font-medium flex items-center gap-1.5">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Synthesizer Artifacts Detected! Unnatural speech cadence and synthetic background noise match AI voice-cloning software.</span>
               </p>
             ) : (
               <p className="text-[11px] text-slate-400">
@@ -187,8 +189,9 @@ export const VoiceRescueGame: React.FC<VoiceRescueGameProps> = ({
               </span>
             </div>
             {safeWordTested ? (
-              <p className="text-[11px] text-emerald-300 font-medium">
-                🛡️ Caller hesitated and could NOT provide the family secret code! Proof of digital impersonation.
+              <p className="text-[11px] text-emerald-300 font-medium flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Caller hesitated and could NOT provide the family secret code! Proof of digital impersonation.</span>
               </p>
             ) : (
               <p className="text-[11px] text-slate-400">

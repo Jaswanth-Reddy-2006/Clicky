@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ChevronLeft, Star, Award, CheckCircle2, TrendingUp, ArrowRight, ShieldCheck } from "lucide-react";
+import { ChevronLeft, Star, Award, CheckCircle2, TrendingUp, ArrowRight, ShieldCheck, Shield, Lightbulb } from "lucide-react";
 import { ChildProfile, TopicProgress, Achievement, SafetyRecommendation } from "@/types";
 
 export default function ChildDetailPage({
@@ -67,8 +67,8 @@ export default function ChildDetailPage({
       {/* Top Banner Card */}
       <div className="p-6 rounded-3xl bg-white border border-gray-200 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-3xl bg-clicky-pale text-clicky-navy text-3xl flex items-center justify-center font-bold">
-            🛡️
+          <div className="w-16 h-16 rounded-3xl bg-clicky-pale text-clicky-navy flex items-center justify-center font-bold shadow-xs">
+            <Shield className="w-8 h-8 text-clicky-navy" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -145,7 +145,9 @@ export default function ChildDetailPage({
                 key={rec.id}
                 className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 text-xs text-amber-950 flex items-start gap-3"
               >
-                <div className="mt-0.5">💡</div>
+                <div className="mt-0.5">
+                  <Lightbulb className="w-4 h-4 text-amber-600 shrink-0" />
+                </div>
                 <div className="flex-1">
                   <h5 className="font-bold text-amber-900">{rec.title}</h5>
                   <p className="font-medium mt-0.5 text-amber-950 leading-relaxed">

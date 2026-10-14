@@ -114,8 +114,8 @@ export const RewardCelebration: React.FC<RewardCelebrationProps> = ({
 
       {/* Badge Unlocked Card */}
       <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 mb-6 flex items-center gap-4 text-left">
-        <div className="w-12 h-12 rounded-2xl bg-clicky-yellow flex items-center justify-center shrink-0 shadow-sm text-2xl">
-          🏅
+        <div className="w-12 h-12 rounded-2xl bg-clicky-yellow flex items-center justify-center shrink-0 shadow-sm text-clicky-navy">
+          <Award className="w-6 h-6 text-clicky-navy" />
         </div>
         <div>
           <div className="text-[10px] font-black uppercase text-amber-700 tracking-wider">

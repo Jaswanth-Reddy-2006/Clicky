@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Shield, Sparkles, Heart, Award, ArrowRight } from "lucide-react";
+import { Shield, Sparkles, Heart, Award, ArrowRight, Gamepad2, Lightbulb } from "lucide-react";
 import { AppLogo } from "@/components/common/AppLogo";
 import { Mascot } from "@/components/common/Mascot";
 import { DemoBanner } from "@/components/common/DemoBanner";
@@ -54,8 +54,8 @@ export default function AboutPage() {
         {/* 4 Core Principles */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card space-y-2">
-            <div className="w-10 h-10 rounded-2xl bg-clicky-pale text-clicky-navy flex items-center justify-center font-bold">
-              🎮
+            <div className="w-10 h-10 rounded-2xl bg-clicky-pale text-clicky-navy flex items-center justify-center font-bold shadow-xs">
+              <Gamepad2 className="w-5 h-5 text-clicky-navy" />
             </div>
             <h3 className="font-black text-clicky-navy text-lg">Fun Over Fear</h3>
             <p className="text-xs text-clicky-muted font-semibold leading-relaxed">
@@ -64,8 +64,8 @@ export default function AboutPage() {
           </div>
 
           <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card space-y-2">
-            <div className="w-10 h-10 rounded-2xl bg-clicky-yellow-pale text-clicky-orange flex items-center justify-center font-bold">
-              💡
+            <div className="w-10 h-10 rounded-2xl bg-clicky-yellow-pale text-clicky-orange flex items-center justify-center font-bold shadow-xs">
+              <Lightbulb className="w-5 h-5 text-clicky-orange" />
             </div>
             <h3 className="font-black text-clicky-navy text-lg">Constructive Feedback</h3>
             <p className="text-xs text-clicky-muted font-semibold leading-relaxed">
@@ -74,8 +74,8 @@ export default function AboutPage() {
           </div>
 
           <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card space-y-2">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-              🛡️
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold shadow-xs">
+              <Shield className="w-5 h-5 text-emerald-600" />
             </div>
             <h3 className="font-black text-clicky-navy text-lg">Safe by Design</h3>
             <p className="text-xs text-clicky-muted font-semibold leading-relaxed">
@@ -84,8 +84,8 @@ export default function AboutPage() {
           </div>
 
           <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card space-y-2">
-            <div className="w-10 h-10 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center font-bold">
-              ❤️
+            <div className="w-10 h-10 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center font-bold shadow-xs">
+              <Heart className="w-5 h-5 text-pink-600" />
             </div>
             <h3 className="font-black text-clicky-navy text-lg">Family Partnership</h3>
             <p className="text-xs text-clicky-muted font-semibold leading-relaxed">

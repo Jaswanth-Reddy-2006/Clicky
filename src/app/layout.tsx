@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { AgentationWrapper } from "@/components/common/AgentationWrapper";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -35,7 +36,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-clicky-bg text-clicky-text antialiased">
         {children}
+        <AgentationWrapper />
       </body>
     </html>
   );
 }
+

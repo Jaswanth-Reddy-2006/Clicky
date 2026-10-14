@@ -16,6 +16,8 @@ import {
   ShieldCheck,
   PhoneCall,
   Lock,
+  Check,
+  Lightbulb,
 } from "lucide-react";
 import { Mascot } from "../common/Mascot";
 import { KindBotMessage } from "@/types";
@@ -254,7 +256,7 @@ export const KindBotChat: React.FC = () => {
                     <ul className="space-y-1">
                       {msg.suggestedActions.map((action, i) => (
                         <li key={i} className="text-xs text-clicky-text font-semibold flex items-start gap-1.5">
-                          <span className="text-emerald-500 font-bold">✓</span>
+                          <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                           <span>{action}</span>
                         </li>
                       ))}
@@ -297,8 +299,9 @@ export const KindBotChat: React.FC = () => {
 
       {/* Starter Questions Chips */}
       <div className="p-2 sm:px-4 bg-clicky-pale/60 border-t border-clicky-border overflow-x-auto flex items-center gap-2 scrollbar-none">
-        <span className="text-[11px] font-black text-clicky-navy shrink-0 hidden sm:inline">
-          💡 Try asking:
+        <span className="inline-flex items-center gap-1 text-[11px] font-black text-clicky-navy shrink-0 hidden sm:inline-flex">
+          <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+          <span>Try asking:</span>
         </span>
         {STARTER_QUESTIONS.map((q, idx) => (
           <button

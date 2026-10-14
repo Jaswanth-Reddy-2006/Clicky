@@ -17,6 +17,7 @@ import {
   MessageSquare,
   BookOpen,
   Check,
+  Gamepad2,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -421,9 +422,9 @@ export default function ParentDashboardPage() {
             {data.recentActivities.slice(0, 5).map((act) => (
               <div key={act.id} className="py-3 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-xl p-2 rounded-xl bg-clicky-pale border border-clicky-sky/30">
-                    🎮
-                  </span>
+                  <div className="p-2 rounded-xl bg-clicky-pale border border-clicky-sky/30 text-clicky-navy">
+                    <Gamepad2 className="w-5 h-5 text-clicky-navy" />
+                  </div>
                   <div>
                     <h5 className="font-black text-xs sm:text-sm text-gray-900">{act.gameTitle}</h5>
                     <span className="text-[11px] text-gray-500 font-medium">{act.topic}</span>

@@ -10,6 +10,7 @@ import {
   Clock,
   ArrowRight,
   Shield,
+  Gamepad2,
 } from "lucide-react";
 import { TopicProgress, ChildProfile } from "@/types";
 import { getLevelProgress } from "@/lib/utils";
@@ -71,8 +72,8 @@ export default function ChildProgressPage() {
       {/* Top Level Summary Card */}
       <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-3xl bg-clicky-yellow/30 text-clicky-navy text-3xl flex items-center justify-center font-black shadow-xs">
-            🛡️
+          <div className="w-16 h-16 rounded-3xl bg-clicky-yellow/30 text-clicky-navy flex items-center justify-center font-black shadow-xs">
+            <Shield className="w-8 h-8 text-clicky-navy" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -178,8 +179,8 @@ export default function ChildProgressPage() {
                 className="p-4 flex items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-clicky-pale text-clicky-navy flex items-center justify-center font-bold text-xs">
-                    🎮
+                  <div className="w-10 h-10 rounded-2xl bg-clicky-pale text-clicky-navy flex items-center justify-center font-bold">
+                    <Gamepad2 className="w-5 h-5 text-clicky-navy" />
                   </div>
                   <div>
                     <h5 className="font-black text-clicky-navy text-sm leading-tight">

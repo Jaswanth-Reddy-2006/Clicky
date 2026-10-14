@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Users, UserPlus, Link2, ArrowRight, ShieldCheck, Star } from "lucide-react";
+import { Users, UserPlus, Link2, ArrowRight, ShieldCheck, Star, Shield, X } from "lucide-react";
 import { ChildProfile } from "@/types";
 
 export default function ParentChildrenPage() {
@@ -100,8 +100,8 @@ export default function ParentChildrenPage() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-clicky-pale text-clicky-navy text-2xl flex items-center justify-center font-bold">
-                    🛡️
+                  <div className="w-12 h-12 rounded-2xl bg-clicky-pale text-clicky-navy flex items-center justify-center font-bold shadow-xs">
+                    <Shield className="w-6 h-6 text-clicky-navy" />
                   </div>
                   <div>
                     <h3 className="font-black text-gray-900 text-base leading-tight">
@@ -172,9 +172,10 @@ export default function ParentChildrenPage() {
               </h3>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-gray-400 hover:text-gray-600 font-bold text-sm"
+                className="p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                aria-label="Close modal"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 

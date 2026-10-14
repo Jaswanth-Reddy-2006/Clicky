@@ -26,6 +26,8 @@ import {
   Pause,
   PhoneCall,
   Heart,
+  Search,
+  Newspaper,
 } from "lucide-react";
 import { Mascot } from "@/components/common/Mascot";
 import { GAMES_DATA } from "@/lib/data/games-data";
@@ -527,9 +529,17 @@ export default function ChildDashboardPage() {
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-2xl p-2.5 rounded-2xl bg-clicky-pale border border-clicky-sky/30">
-                    {i === 0 ? "🕵️" : i === 1 ? "🛡️" : i === 2 ? "📰" : "🔐"}
-                  </span>
+                  <div className="p-2.5 rounded-2xl bg-clicky-pale border border-clicky-sky/30 text-clicky-navy">
+                    {i === 0 ? (
+                      <Search className="w-5 h-5 text-amber-600" />
+                    ) : i === 1 ? (
+                      <Shield className="w-5 h-5 text-indigo-600" />
+                    ) : i === 2 ? (
+                      <Newspaper className="w-5 h-5 text-rose-600" />
+                    ) : (
+                      <Lock className="w-5 h-5 text-emerald-600" />
+                    )}
+                  </div>
                   <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-gray-100 text-clicky-muted">
                     {game.totalScenarios} Scenarios
                   </span>

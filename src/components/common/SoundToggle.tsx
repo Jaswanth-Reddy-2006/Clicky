@@ -17,7 +17,7 @@ export const SoundToggle: React.FC<{ className?: string }> = ({ className = "" }
     const nextState = toggleAudioMute();
     setIsMuted(nextState);
     if (!nextState) {
-      playSound("click");
+      playSound("chime");
     }
   };
 

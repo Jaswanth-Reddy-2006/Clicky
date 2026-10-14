@@ -55,7 +55,7 @@ export const ClueInspectorGame: React.FC<ClueInspectorGameProps> = ({
     {
       id: "urgency",
       label: "Time Limit Alert",
-      value: "⏳ Rushed Countdown / Urgent Action Required",
+      value: "Rushed Countdown / Urgent Action Required",
       isRedFlag: true,
       hint: "Scammers create false panic so you act quickly before thinking critically or asking an adult.",
       icon: AlertTriangle,
@@ -63,7 +63,7 @@ export const ClueInspectorGame: React.FC<ClueInspectorGameProps> = ({
     {
       id: "link",
       label: "Hyperlink / Web URL",
-      value: "🔗 http://free-gems-claim-now.xyz/login",
+      value: "http://free-gems-claim-now.xyz/login",
       isRedFlag: true,
       hint: "Unverified domain (.xyz) designed to steal passwords. Never click unverified login links.",
       icon: ExternalLink,
@@ -71,7 +71,7 @@ export const ClueInspectorGame: React.FC<ClueInspectorGameProps> = ({
     {
       id: "credential",
       label: "Password Request",
-      value: "🔒 'Enter your game password to claim'",
+      value: "'Enter your game password to claim'",
       isRedFlag: true,
       hint: "Absolute rule: Never share your account password with anyone online, ever.",
       icon: Lock,
@@ -79,7 +79,7 @@ export const ClueInspectorGame: React.FC<ClueInspectorGameProps> = ({
   ];
 
   const handleInspect = (id: string, hint: string) => {
-    playSound("click");
+    playSound("clue");
     if (!inspectedIds.includes(id)) {
       setInspectedIds([...inspectedIds, id]);
     }
@@ -130,7 +130,7 @@ export const ClueInspectorGame: React.FC<ClueInspectorGameProps> = ({
         <div className="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg border border-amber-500/30">
-              {scenario.characterAvatar || "🎮"}
+              <Search className="w-5 h-5 text-amber-400" />
             </div>
             <div>
               <div className="text-sm font-bold text-white flex items-center gap-2">
@@ -223,8 +223,9 @@ export const ClueInspectorGame: React.FC<ClueInspectorGameProps> = ({
             Issue Your Detective Verdict
           </h3>
           {!allCluesInspected && (
-            <span className="text-[11px] text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-              💡 Tip: Inspect at least 2 clues above
+            <span className="inline-flex items-center gap-1 text-[11px] text-amber-600 font-bold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+              <Lightbulb className="w-3 h-3 text-amber-500" />
+              <span>Tip: Inspect at least 2 clues above</span>
             </span>
           )}
         </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   UsersRound,
+  Shield,
   ShieldCheck,
   Sparkles,
   Copy,
@@ -20,6 +21,7 @@ import {
   Heart,
   ArrowRight,
   Smile,
+  X,
 } from "lucide-react";
 import { Friend, FriendChallenge, PredefinedReaction } from "@/types";
 import { Mascot } from "@/components/common/Mascot";
@@ -352,13 +354,15 @@ export default function ChildFriendsPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-lg font-bold shadow-2xs">
-                        {friend.avatar === "cyber-wolf"
-                          ? "🐺"
-                          : friend.avatar === "pixel-panda"
-                          ? "🐼"
-                          : friend.avatar === "star-coder"
-                          ? "⭐"
-                          : "🚀"}
+                        {friend.avatar === "cyber-wolf" ? (
+                          <Shield className="w-5 h-5 text-indigo-600" />
+                        ) : friend.avatar === "pixel-panda" ? (
+                          <Gamepad2 className="w-5 h-5 text-purple-600" />
+                        ) : friend.avatar === "star-coder" ? (
+                          <Sparkles className="w-5 h-5 text-amber-500" />
+                        ) : (
+                          <UsersRound className="w-5 h-5 text-sky-500" />
+                        )}
                       </div>
                       <div>
                         <div className="flex items-center gap-1.5">
@@ -536,9 +540,10 @@ export default function ChildFriendsPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedFriendForCheer(null)}
-                  className="text-slate-400 hover:text-slate-600 font-bold text-xs"
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                  aria-label="Close modal"
                 >
-                  ✕
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 

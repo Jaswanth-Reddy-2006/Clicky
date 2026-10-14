@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Award, Lock, Sparkles, CheckCircle2, Star } from "lucide-react";
+import { Award, Lock, Sparkles, CheckCircle2, Star, Trophy, Flame } from "lucide-react";
 import { Achievement } from "@/types";
 
 export default function AchievementsPage() {
@@ -57,8 +57,8 @@ export default function AchievementsPage() {
 
         {/* Counter Badge */}
         <div className="p-4 rounded-2xl bg-white border border-clicky-border shadow-xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-clicky-yellow/30 text-clicky-navy text-xl flex items-center justify-center font-bold">
-            🏆
+          <div className="w-10 h-10 rounded-xl bg-clicky-yellow/30 text-clicky-navy flex items-center justify-center font-bold">
+            <Trophy className="w-5 h-5 text-clicky-navy" />
           </div>
           <div>
             <span className="text-[10px] text-clicky-muted uppercase font-black tracking-wider block">
@@ -110,7 +110,13 @@ export default function AchievementsPage() {
                 }`}
               >
                 {isUnlocked ? (
-                  badge.category === "GAME" ? "🏅" : badge.category === "STREAK" ? "🔥" : "⭐"
+                  badge.category === "GAME" ? (
+                    <Award className="w-7 h-7 text-clicky-navy" />
+                  ) : badge.category === "STREAK" ? (
+                    <Flame className="w-7 h-7 text-orange-500 fill-orange-500" />
+                  ) : (
+                    <Star className="w-7 h-7 text-clicky-yellow fill-clicky-yellow" />
+                  )
                 ) : (
                   <Lock className="w-6 h-6 text-gray-400" />
                 )}

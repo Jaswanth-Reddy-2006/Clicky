@@ -6,6 +6,8 @@ import {
   Heart,
   Sparkles,
   Smile,
+  Frown,
+  Meh,
   Shield,
   CheckCircle2,
   Users,
@@ -117,7 +119,13 @@ export const KindnessStoryGame: React.FC<KindnessStoryGameProps> = ({
                   : "bg-slate-800 border-slate-700 text-slate-400"
               }`}
             >
-              {empathyScore >= 80 ? "😊" : empathyScore >= 50 ? "🥺" : "😢"}
+              {empathyScore >= 80 ? (
+                <Smile className="w-6 h-6 text-emerald-400" />
+              ) : empathyScore >= 50 ? (
+                <Meh className="w-6 h-6 text-pink-300" />
+              ) : (
+                <Frown className="w-6 h-6 text-rose-400" />
+              )}
             </div>
             <div>
               <h5 className="text-sm font-black text-white flex items-center gap-2">

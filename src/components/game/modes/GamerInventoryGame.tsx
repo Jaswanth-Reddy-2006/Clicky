@@ -43,7 +43,7 @@ export const GamerInventoryGame: React.FC<GamerInventoryGameProps> = ({
       suspicious: true,
       tag: "FLAGGED LINK",
       detail:
-        "⚠️ Tooltip warning: Description says 'Redeem code at claim-skins-free.biz/trade'. This is an off-platform phishing link designed to hijack your game credentials!",
+        "Tooltip warning: Description says 'Redeem code at claim-skins-free.biz/trade'. This is an off-platform phishing link designed to hijack your game credentials!",
     },
     {
       id: "i2",
@@ -53,7 +53,7 @@ export const GamerInventoryGame: React.FC<GamerInventoryGameProps> = ({
       suspicious: true,
       tag: "MALWARE RISK",
       detail:
-        "⚠️ Trojan Warning: Requires downloading an 'auto-clicker.exe' script. Downloading cheat software almost always infects your computer with info-stealing malware.",
+        "Trojan Warning: Requires downloading an 'auto-clicker.exe' script. Downloading cheat software almost always infects your computer with info-stealing malware.",
     },
     {
       id: "i3",
@@ -68,7 +68,7 @@ export const GamerInventoryGame: React.FC<GamerInventoryGameProps> = ({
   ];
 
   const handleInspectItem = (id: string) => {
-    playSound("click");
+    playSound("clue");
     setInspectedItem(id);
   };
 
@@ -102,8 +102,8 @@ export const GamerInventoryGame: React.FC<GamerInventoryGameProps> = ({
         {/* Trade Partner Box */}
         <div className="bg-purple-950/40 p-3.5 rounded-2xl border border-purple-800/60 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold text-lg border border-purple-500/40">
-              {scenario.characterAvatar || "👾"}
+            <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold text-lg border border-purple-500/40 shadow-2xs">
+              <Gamepad2 className="w-5 h-5 text-purple-300" />
             </div>
             <div>
               <div className="flex items-center gap-2">

@@ -139,8 +139,8 @@ export const PrivacyLabGame: React.FC<PrivacyLabGameProps> = ({
 
         {/* Target App Info */}
         <div className="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold text-lg border border-emerald-500/40">
-            {scenario.characterAvatar || "📱"}
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold text-lg border border-emerald-500/40 shadow-2xs">
+            <Lock className="w-5 h-5 text-emerald-300" />
           </div>
           <div className="flex-1">
             <div className="flex items-center justify-between">

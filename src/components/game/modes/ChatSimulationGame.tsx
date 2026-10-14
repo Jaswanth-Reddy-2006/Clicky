@@ -12,6 +12,9 @@ import {
   AlertCircle,
   Sparkles,
   Users,
+  Check,
+  Plus,
+  ShieldAlert,
 } from "lucide-react";
 import { Scenario, ScenarioOption } from "@/types";
 import { playSound } from "@/lib/utils";
@@ -35,7 +38,7 @@ export const ChatSimulationGame: React.FC<ChatSimulationGameProps> = ({
   const responseTokens = [
     { id: "t1", text: "Hey everyone, let's keep it friendly here.", safe: true, type: "deescalate" },
     { id: "t2", text: "That was hurtful and not cool to say.", safe: true, type: "boundary" },
-    { id: "t3", text: "I'm sending you a DM to check in on you ❤️", safe: true, type: "support" },
+    { id: "t3", text: "I'm sending you a private message to check in on you.", safe: true, type: "support" },
     { id: "t4", text: "Let's focus on enjoying the game together.", safe: true, type: "redirect" },
     { id: "t5", text: "You're just being way too sensitive!", safe: false, type: "dismissive" },
     { id: "t6", text: "Whatever, this chat is boring anyway.", safe: false, type: "unhelpful" },
@@ -103,8 +106,8 @@ export const ChatSimulationGame: React.FC<ChatSimulationGameProps> = ({
 
           {/* Hurtful / Provocative message from scenario */}
           <div className="flex items-start gap-2.5 max-w-[85%]">
-            <div className="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center text-xs font-bold text-red-600">
-              {scenario.characterAvatar || "⚡"}
+            <div className="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center text-xs font-bold text-red-600 shadow-2xs">
+              <ShieldAlert className="w-4 h-4 text-red-600" />
             </div>
             <div className="bg-red-50/80 p-3 rounded-2xl rounded-tl-xs border-2 border-red-200 shadow-2xs">
               <div className="flex items-center justify-between gap-2 mb-1">
@@ -197,8 +200,12 @@ export const ChatSimulationGame: React.FC<ChatSimulationGameProps> = ({
                       : "bg-white border-slate-200 text-slate-600 hover:border-red-300 hover:text-red-700"
                   }`}
                 >
-                  {isUsed ? "✓ " : "+ "}
-                  {token.text}
+                  {isUsed ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  ) : (
+                    <Plus className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                  )}
+                  <span>{token.text}</span>
                 </button>
               );
             })}

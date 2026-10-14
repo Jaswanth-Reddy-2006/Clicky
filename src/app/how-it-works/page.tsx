@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Compass, Sparkles, CheckCircle2, Shield, Bot, ArrowRight, Star } from "lucide-react";
+import { Compass, Sparkles, CheckCircle2, Shield, Bot, ArrowRight, Star, Gamepad2, Search, Lightbulb, Award } from "lucide-react";
 import { AppLogo } from "@/components/common/AppLogo";
 import { Mascot } from "@/components/common/Mascot";
 import { DemoBanner } from "@/components/common/DemoBanner";
@@ -11,37 +11,37 @@ export default function HowItWorksPage() {
       num: "01",
       title: "Interactive Game Worlds",
       desc: "Children enter 8 distinct cartoon game realms, from detective crime-solving to futuristic AI laboratories. Each world simulates authentic digital interactions such as direct messages, voice calls, viral videos, and multiplayer lobbies.",
-      icon: "🎮",
+      icon: Gamepad2,
     },
     {
       num: "02",
       title: "Clue Inspection & Red Flags",
       desc: "Before making a decision, kids can tap to inspect detective clues. They examine URL spellings, artificial urgency tactics, requests for passwords, and unusual background details.",
-      icon: "🔍",
+      icon: Search,
     },
     {
       num: "03",
       title: "Immediate Golden Rules",
       desc: "Every choice produces instant educational feedback. If an answer is unsafe, the game explains why without punishment and reinforces a memorable Golden Safety Rule.",
-      icon: "💡",
+      icon: Lightbulb,
     },
     {
       num: "04",
       title: "XP, Badges & Level Ups",
       desc: "Safe decisions earn XP and unlock badges like 'Scam Spotter' and 'Vault Guardian'. Children progress from Curious Explorer to Clicky Champion as their skills grow.",
-      icon: "🏆",
+      icon: Award,
     },
     {
       num: "05",
       title: "KindBot Safety Companion",
       desc: "Children can consult KindBot anytime. KindBot is a supportive AI companion that helps think through concerns, offers suggested next steps, and directs kids to trusted adults.",
-      icon: "🤖",
+      icon: Bot,
     },
     {
       num: "06",
       title: "Parent Guardian Linkage",
       desc: "Parents use a single-use pairing code to connect their dashboard. Parents see topic mastery, estimated practice time, and constructive conversation prompts.",
-      icon: "🛡️",
+      icon: Shield,
     },
   ];
 
@@ -75,14 +75,16 @@ export default function HowItWorksPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {steps.map((step) => (
-            <div
-              key={step.num}
-              className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card flex items-start gap-4"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-clicky-pale text-2xl flex items-center justify-center shrink-0 border border-clicky-sky/30 shadow-xs">
-                {step.icon}
-              </div>
+          {steps.map((step) => {
+            const StepIcon = step.icon;
+            return (
+              <div
+                key={step.num}
+                className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card flex items-start gap-4"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-clicky-pale text-clicky-navy flex items-center justify-center shrink-0 border border-clicky-sky/30 shadow-xs">
+                  <StepIcon className="w-6 h-6 text-clicky-navy" />
+                </div>
               <div className="flex-1">
                 <span className="text-[11px] font-black text-clicky-orange uppercase tracking-wider block">
                   Step {step.num}
@@ -95,7 +97,8 @@ export default function HowItWorksPage() {
                 </p>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
 
         <div className="p-8 rounded-3xl bg-gradient-to-r from-clicky-navy to-clicky-navy-dark text-white text-center space-y-4">
