@@ -1,0 +1,143 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  PARENT
+  CHILD
+}
+
+enum AgeBand {
+  EARLY_EXPLORER // 6-8
+  DIGITAL_NAVIGATOR // 9-11
+  CYBER_HERO // 12-14
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String
+  name         String
+  role         Role          @default(PARENT)
+  avatar       String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relationships
+  childProfiles     ChildProfile[]     @relation("UserChildProfiles")
+  parentLinks       ParentChildLink[]  @relation("ParentLinks")
+  issuedPairingCodes PairingCode[]     @relation("IssuedCodes")
+}
+
+model ChildProfile {
+  id            String    @id @default(uuid())
+  userId        String?   @unique
+  user          User?     @relation("UserChildProfiles", fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  avatar        String    @default("robot-shield")
+  ageBand       AgeBand   @default(DIGITAL_NAVIGATOR)
+  level         Int       @default(1)
+  levelTitle    String    @default("Curious Explorer")
+  xp            Int       @default(0)
+  currentStreak Int       @default(1)
+  lastActiveAt  DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  parentLinks       ParentChildLink[]
+  gameSessions      GameSession[]
+  gameResults       GameResult[]
+  userAchievements  UserAchievement[]
+  learningProgress  LearningProgress[]
+  recommendations   SafetyRecommendation[]
+}
+
+model ParentChildLink {
+  id             String       @id @default(uuid())
+  parentId       String
+  parent         User         @relation("ParentLinks", fields: [parentId], references: [id], onDelete: Cascade)
+  childProfileId String
+  childProfile   ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@unique([parentId, childProfileId])
+}
+
+model PairingCode {
+  id        String    @id @default(uuid())
+  code      String    @unique
+  parentId  String
+  parent    User      @relation("IssuedCodes", fields: [parentId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model GameSession {
+  id             String       @id @default(uuid())
+  childProfileId String
+  childProfile   ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  gameSlug       String
+  score          Int          @default(0)
+  maxScore       Int          @default(100)
+  xpEarned       Int          @default(0)
+  isCompleted    Boolean      @default(false)
+  completedAt    DateTime?
+  createdAt      DateTime     @default(now())
+
+  results        GameResult[]
+}
+
+model GameResult {
+  id               String       @id @default(uuid())
+  sessionId        String?
+  session          GameSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  childProfileId   String
+  childProfile     ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  gameSlug         String
+  scenarioId       String
+  selectedOptionId String
+  isCorrect        Boolean
+  createdAt        DateTime     @default(now())
+}
+
+model UserAchievement {
+  id              String       @id @default(uuid())
+  childProfileId  String
+  childProfile    ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  achievementSlug String
+  unlockedAt      DateTime     @default(now())
+
+  @@unique([childProfileId, achievementSlug])
+}
+
+model LearningProgress {
+  id                String       @id @default(uuid())
+  childProfileId    String
+  childProfile      ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  topic             String       // e.g. "Scams", "Cyberbullying", "Privacy", "Misinformation", "AI Literacy", "Voice Cloning", "Kindness", "Gaming"
+  scorePercentage   Int          @default(0)
+  missionsCompleted Int          @default(0)
+  totalAttempts     Int          @default(0)
+  lastPracticedAt   DateTime     @default(now())
+
+  @@unique([childProfileId, topic])
+}
+
+model SafetyRecommendation {
+  id             String       @id @default(uuid())
+  childProfileId String
+  childProfile   ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  topic          String
+  title          String
+  description    String
+  priority       String       @default("MEDIUM") // "HIGH", "MEDIUM", "LOW"
+  gameSlug       String?
+  isDismissed    Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+}
