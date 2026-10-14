@@ -175,6 +175,7 @@ export interface ParentOverviewData {
   recommendations: SafetyRecommendation[];
   recentActivities: {
     id: string;
+    gameSlug: string;
     gameTitle: string;
     topic: SafetyTopic;
     completedAt: string;

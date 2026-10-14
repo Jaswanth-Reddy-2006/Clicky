@@ -17,25 +17,25 @@ export default function ChildDetailPage({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchChildDetails = async () => {
+      try {
+        const res = await fetch(`/api/children/${params.id}`);
+        const data = await res.json();
+        if (data.success && data.child) {
+          setChild(data.child);
+          setTopicProgress(data.topicProgress || []);
+          setAchievements(data.recentAchievements || []);
+          setRecommendations(data.recommendations || []);
+        }
+      } catch (err) {
+        console.error("Error fetching child details:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchChildDetails();
   }, [params.id]);
-
-  const fetchChildDetails = async () => {
-    try {
-      const res = await fetch(`/api/children/${params.id}`);
-      const data = await res.json();
-      if (data.success && data.child) {
-        setChild(data.child);
-        setTopicProgress(data.topicProgress || []);
-        setAchievements(data.recentAchievements || []);
-        setRecommendations(data.recommendations || []);
-      }
-    } catch (err) {
-      console.error("Error fetching child details:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading || !child) {
     return (

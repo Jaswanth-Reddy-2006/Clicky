@@ -7,8 +7,10 @@ import { TopicProgress, ParentOverviewData } from "@/types";
 export default function ParentProgressPage() {
   const [data, setData] = useState<ParentOverviewData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     fetchOverview();
   }, []);
 
@@ -26,7 +28,7 @@ export default function ParentProgressPage() {
     }
   };
 
-  if (loading || !data) {
+  if (!mounted || loading || !data) {
     return (
       <div className="p-8 text-center text-xs font-bold text-gray-500 animate-pulse">
         Loading progress data...

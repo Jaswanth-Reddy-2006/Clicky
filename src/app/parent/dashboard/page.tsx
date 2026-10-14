@@ -30,8 +30,10 @@ import { ParentOverviewData } from "@/types";
 export default function ParentDashboardPage() {
   const [data, setData] = useState<ParentOverviewData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     fetchOverview();
   }, []);
 
@@ -49,7 +51,7 @@ export default function ParentDashboardPage() {
     }
   };
 
-  if (loading || !data) {
+  if (!mounted || loading || !data) {
     return (
       <div className="p-8 text-center text-xs font-bold text-gray-500 animate-pulse">
         Loading parent insights & analytics...
