@@ -14,6 +14,7 @@ import {
   Star,
   Flag,
   Sparkles,
+  Zap,
 } from "lucide-react";
 import { GameDefinition, ScenarioOption } from "@/types";
 import { Mascot } from "../common/Mascot";
@@ -25,6 +26,83 @@ interface GameEngineProps {
   childProfileId?: string;
   onCompleteCallback?: (result: { score: number; xpEarned: number }) => void;
 }
+
+const GAME_THEMES: Record<
+  string,
+  {
+    headerGradient: string;
+    badgeLabel: string;
+    badgeIcon: string;
+    badgeBg: string;
+    atmosphereName: string;
+    accentColor: string;
+  }
+> = {
+  "scam-detective": {
+    headerGradient: "from-[#1E293B] via-[#334155] to-[#0F172A]",
+    badgeLabel: "Detective HQ • Investigation Unit",
+    badgeIcon: "🕵️",
+    badgeBg: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+    atmosphereName: "Crime Lab & Scam Dossier",
+    accentColor: "border-amber-400",
+  },
+  "cyberbullying-heroes": {
+    headerGradient: "from-[#312E81] via-[#4338CA] to-[#1E1B4B]",
+    badgeLabel: "Hero Squad • Empathy Shield",
+    badgeIcon: "🛡️",
+    badgeBg: "bg-indigo-500/20 text-indigo-300 border-indigo-500/40",
+    atmosphereName: "Kindness Citadel & Support Center",
+    accentColor: "border-indigo-400",
+  },
+  "fake-or-fact": {
+    headerGradient: "from-[#881337] via-[#9F1239] to-[#4C0519]",
+    badgeLabel: "Newsroom Press Desk • Fact Check",
+    badgeIcon: "📰",
+    badgeBg: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+    atmosphereName: "Investigative Newsroom Bureau",
+    accentColor: "border-rose-400",
+  },
+  "privacy-protector": {
+    headerGradient: "from-[#064E3B] via-[#047857] to-[#022C22]",
+    badgeLabel: "Digital Vault • Security Terminal",
+    badgeIcon: "🔐",
+    badgeBg: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+    atmosphereName: "High-Security Data Vault",
+    accentColor: "border-emerald-400",
+  },
+  "safe-ai-explorer": {
+    headerGradient: "from-[#0F172A] via-[#0E7490] to-[#083344]",
+    badgeLabel: "Future AI Lab • Robot Safety",
+    badgeIcon: "🤖",
+    badgeBg: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40",
+    atmosphereName: "Cybernetic Neural Testing Facility",
+    accentColor: "border-cyan-400",
+  },
+  "voiceguard-rescue": {
+    headerGradient: "from-[#1E3A8A] via-[#1D4ED8] to-[#172554]",
+    badgeLabel: "Telecom Dispatch • Voice Analysis",
+    badgeIcon: "📻",
+    badgeBg: "bg-blue-500/20 text-blue-300 border-blue-500/40",
+    atmosphereName: "Audio Forensics Communications Unit",
+    accentColor: "border-blue-400",
+  },
+  "kindness-kingdom": {
+    headerGradient: "from-[#831843] via-[#BE185D] to-[#500724]",
+    badgeLabel: "Kindness Realm • Social Citadel",
+    badgeIcon: "💖",
+    badgeBg: "bg-pink-500/20 text-pink-300 border-pink-500/40",
+    atmosphereName: "Empathy Sanctuary & Community Courtyard",
+    accentColor: "border-pink-400",
+  },
+  "gamer-safety-quest": {
+    headerGradient: "from-[#3B0764] via-[#581C87] to-[#2E1065]",
+    badgeLabel: "Pixel Arcade • Inventory & Trade",
+    badgeIcon: "🕹️",
+    badgeBg: "bg-purple-500/20 text-purple-300 border-purple-500/40",
+    atmosphereName: "Arcade Chamber & Quest Marketplace",
+    accentColor: "border-purple-400",
+  },
+};
 
 export const GameEngine: React.FC<GameEngineProps> = ({
   game,
@@ -47,6 +125,16 @@ export const GameEngine: React.FC<GameEngineProps> = ({
     ((currentIndex + (hasSubmitted ? 1 : 0)) / game.totalScenarios) * 100
   );
 
+  const theme =
+    GAME_THEMES[game.slug] || {
+      headerGradient: "from-clicky-navy via-clicky-navy to-clicky-navy-dark",
+      badgeLabel: game.theme,
+      badgeIcon: "🛡️",
+      badgeBg: "bg-white/20 text-white border-white/30",
+      atmosphereName: game.title,
+      accentColor: "border-clicky-yellow",
+    };
+
   const handleSelectOption = (option: ScenarioOption) => {
     if (hasSubmitted) return;
     playSound("click");
@@ -67,12 +155,13 @@ export const GameEngine: React.FC<GameEngineProps> = ({
       setAccumulatedXp((prev) => prev + scenario.xpReward);
     } else {
       playSound("incorrect");
-      // Partial XP for learning effort
+      // Partial XP for constructive effort
       setAccumulatedXp((prev) => prev + Math.round(scenario.xpReward * 0.3));
     }
   };
 
   const handleNext = async () => {
+    playSound("click");
     // If more scenarios remain, go to next
     if (currentIndex + 1 < game.scenarios.length) {
       setCurrentIndex((prev) => prev + 1);
@@ -81,6 +170,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
       setShowClue(false);
     } else {
       // Game Complete!
+      playSound("celebrate");
       const finalAccuracy = Math.round(
         ((correctFirstTries + (scenario.options.find((o) => o.id === selectedOptionId)?.isCorrect ? 1 : 0)) /
           game.totalScenarios) *
@@ -120,6 +210,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
   };
 
   const handleReplay = () => {
+    playSound("click");
     setCurrentIndex(0);
     setSelectedOptionId(null);
     setHasSubmitted(false);
@@ -146,15 +237,15 @@ export const GameEngine: React.FC<GameEngineProps> = ({
   const chosenOption = scenario.options.find((o) => o.id === selectedOptionId);
 
   return (
-    <div className="max-w-3xl mx-auto py-4 px-3 sm:px-6">
-      {/* Top Header Bar */}
-      <div className="flex items-center justify-between gap-4 mb-4">
+    <div className="max-w-3xl mx-auto py-4 px-3 sm:px-6 space-y-4">
+      {/* Top Header Navigation Bar */}
+      <div className="flex items-center justify-between gap-4 mb-2">
         <Link
           href="/child/games"
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-clicky-border text-clicky-navy text-xs font-black hover:bg-clicky-pale transition-colors shadow-xs"
         >
           <ChevronLeft className="w-4 h-4" />
-          <span>Exit Game</span>
+          <span>Exit Realm</span>
         </Link>
 
         {/* Progress Tracker */}
@@ -171,52 +262,55 @@ export const GameEngine: React.FC<GameEngineProps> = ({
           </div>
         </div>
 
-        {/* Topic Badge */}
-        <span className="hidden sm:inline-block px-3 py-1 rounded-full bg-clicky-pale text-clicky-navy text-xs font-bold border border-clicky-sky/40">
-          {game.topic}
+        {/* Themed Atmosphere Badge */}
+        <span className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black border ${theme.badgeBg}`}>
+          <span>{theme.badgeIcon}</span>
+          <span>{theme.badgeLabel.split("•")[0]}</span>
         </span>
       </div>
 
-      {/* Main Scenario Card */}
+      {/* Main Themed Scenario Card */}
       <motion.div
         key={scenario.id}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="bg-white rounded-3xl border border-clicky-border shadow-card overflow-hidden"
+        transition={{ duration: 0.25 }}
+        className="bg-white rounded-3xl border-2 border-clicky-border shadow-card overflow-hidden"
       >
-        {/* Card Header */}
-        <div className="bg-gradient-to-r from-clicky-navy via-clicky-navy to-clicky-navy-dark text-white p-5 sm:p-6">
+        {/* Themed Atmosphere Card Header */}
+        <div className={`bg-gradient-to-r ${theme.headerGradient} text-white p-5 sm:p-6 relative overflow-hidden`}>
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-black tracking-wider uppercase text-clicky-yellow flex items-center gap-1.5">
-              <Shield className="w-4 h-4 text-clicky-yellow" />
-              {game.title} • Challenge #{currentIndex + 1}
+              <span>{theme.badgeIcon}</span>
+              <span>{game.title} • Mission #{currentIndex + 1}</span>
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white font-bold text-[11px]">
+            <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white font-bold text-[11px] border border-white/20">
               {scenario.difficulty}
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-white leading-tight">
             {scenario.title}
           </h2>
-          <p className="text-clicky-sky-light text-sm mt-1.5 font-medium leading-relaxed">
+          <p className="text-gray-200 text-xs sm:text-sm mt-1.5 font-medium leading-relaxed">
             {scenario.prompt}
           </p>
         </div>
 
         {/* Fictional Message / Dialogue Box */}
         {scenario.characterMessage && (
-          <div className="p-5 sm:p-6 bg-clicky-bg border-b border-clicky-border/60">
+          <div className="p-5 sm:p-6 bg-clicky-bg/70 border-b border-clicky-border/60">
             <div className="flex items-start gap-3 bg-white p-4 rounded-2xl border-2 border-dashed border-clicky-sky/60 shadow-xs">
               <div className="w-12 h-12 rounded-2xl bg-clicky-pale text-2xl flex items-center justify-center shrink-0 shadow-xs border border-clicky-sky/40">
                 {scenario.characterAvatar || "💬"}
               </div>
               <div className="flex-1">
                 <div className="text-xs font-extrabold text-clicky-navy flex items-center justify-between">
-                  <span>{scenario.characterName || "Online Message"}</span>
-                  <span className="text-[10px] text-gray-400 font-medium">Simulation</span>
+                  <span>{scenario.characterName || "Incoming Message"}</span>
+                  <span className="text-[10px] text-gray-400 font-medium bg-gray-100 px-2 py-0.5 rounded-full">
+                    Simulation
+                  </span>
                 </div>
-                <p className="text-clicky-text text-sm font-semibold mt-1 leading-relaxed bg-amber-50/50 p-2.5 rounded-xl border border-amber-100/80">
+                <p className="text-clicky-text text-sm font-semibold mt-1 leading-relaxed bg-amber-50/60 p-2.5 rounded-xl border border-amber-200/80">
                   {scenario.characterMessage}
                 </p>
               </div>
@@ -226,7 +320,10 @@ export const GameEngine: React.FC<GameEngineProps> = ({
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
               <button
                 type="button"
-                onClick={() => setShowClue(!showClue)}
+                onClick={() => {
+                  playSound("click");
+                  setShowClue(!showClue);
+                }}
                 className="text-xs font-bold text-clicky-navy hover:text-clicky-orange flex items-center gap-1.5 transition-colors"
               >
                 <Lightbulb className="w-4 h-4 text-clicky-yellow fill-clicky-yellow" />
@@ -236,7 +333,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
               {scenario.redFlags && scenario.redFlags.length > 0 && (
                 <span className="text-[11px] text-clicky-muted font-bold flex items-center gap-1">
                   <Flag className="w-3.5 h-3.5 text-clicky-orange" />
-                  {scenario.redFlags.length} Red Flags present
+                  <span>{scenario.redFlags.length} Red Flags Present</span>
                 </span>
               )}
             </div>
@@ -251,7 +348,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
                   className="mt-3 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-2 overflow-hidden"
                 >
                   <p className="font-bold flex items-center gap-1.5">
-                    <span>💡 Hint:</span>
+                    <span>💡 Clue:</span>
                     <span>{scenario.clue}</span>
                   </p>
                   {scenario.redFlags && (
@@ -274,7 +371,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
 
         {/* Options Section */}
         <div className="p-5 sm:p-6 space-y-3">
-          <h3 className="text-sm font-black text-clicky-navy uppercase tracking-wider mb-2">
+          <h3 className="text-xs font-black text-clicky-navy uppercase tracking-wider mb-2">
             What is the safest decision?
           </h3>
 
@@ -283,18 +380,18 @@ export const GameEngine: React.FC<GameEngineProps> = ({
               const isSelected = selectedOptionId === option.id;
               const isCorrect = option.isCorrect;
 
-              let cardStyle = "bg-white border-clicky-border hover:border-clicky-navy hover:bg-clicky-pale/40";
+              let cardStyle = "bg-white border-clicky-border hover:border-clicky-navy hover:bg-clicky-pale/40 text-clicky-text";
 
               if (hasSubmitted) {
                 if (isCorrect) {
-                  cardStyle = "bg-emerald-50 border-emerald-400 text-emerald-950 ring-2 ring-emerald-300";
+                  cardStyle = "bg-emerald-50 border-emerald-400 text-emerald-950 ring-2 ring-emerald-300 font-bold";
                 } else if (isSelected && !isCorrect) {
-                  cardStyle = "bg-red-50 border-red-300 text-red-950";
+                  cardStyle = "bg-red-50 border-red-300 text-red-950 font-bold";
                 } else {
-                  cardStyle = "bg-gray-50 border-gray-200 opacity-60";
+                  cardStyle = "bg-gray-50 border-gray-200 opacity-60 text-gray-500";
                 }
               } else if (isSelected) {
-                cardStyle = "bg-clicky-pale border-clicky-navy ring-2 ring-clicky-navy shadow-xs";
+                cardStyle = "bg-clicky-pale border-clicky-navy ring-2 ring-clicky-navy shadow-xs font-semibold";
               }
 
               return (
@@ -302,124 +399,102 @@ export const GameEngine: React.FC<GameEngineProps> = ({
                   key={option.id}
                   onClick={() => handleSelectOption(option)}
                   disabled={hasSubmitted}
-                  className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 flex items-start gap-3.5 select-none ${cardStyle}`}
+                  className={`w-full p-4 rounded-2xl border-2 text-left text-xs sm:text-sm transition-all flex items-start gap-3 shadow-2xs ${cardStyle}`}
                 >
-                  <div
-                    className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs shrink-0 mt-0.5 ${
-                      hasSubmitted
-                        ? isCorrect
-                          ? "bg-emerald-500 text-white"
-                          : isSelected
-                          ? "bg-red-500 text-white"
-                          : "bg-gray-200 text-gray-500"
+                  <span
+                    className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs shrink-0 shadow-2xs ${
+                      hasSubmitted && isCorrect
+                        ? "bg-emerald-500 text-white"
+                        : hasSubmitted && isSelected && !isCorrect
+                        ? "bg-red-500 text-white"
                         : isSelected
                         ? "bg-clicky-navy text-white"
-                        : "bg-clicky-pale text-clicky-navy"
+                        : "bg-white border border-gray-300 text-clicky-navy"
                     }`}
                   >
-                    {hasSubmitted ? (
-                      isCorrect ? (
-                        <CheckCircle2 className="w-4 h-4" />
-                      ) : isSelected ? (
-                        <XCircle className="w-4 h-4" />
-                      ) : (
-                        String.fromCharCode(65 + idx)
-                      )
-                    ) : (
-                      String.fromCharCode(65 + idx)
-                    )}
-                  </div>
-                  <span className="text-sm font-bold leading-snug flex-1">
-                    {option.text}
+                    {String.fromCharCode(65 + idx)}
                   </span>
+                  <span className="flex-1 pt-0.5 leading-snug">{option.text}</span>
                 </button>
               );
             })}
           </div>
 
-          {/* Action Button: Confirm Answer or Next */}
-          <div className="pt-4 flex items-center justify-end">
-            {!hasSubmitted ? (
+          {/* Confirm Decision Button (before submit) */}
+          {!hasSubmitted && (
+            <div className="pt-3">
               <button
                 type="button"
                 onClick={handleConfirmAnswer}
                 disabled={!selectedOptionId}
-                className={`px-7 py-3 rounded-2xl font-black text-sm transition-all shadow-md ${
-                  selectedOptionId
-                    ? "bg-clicky-orange hover:bg-clicky-orange-hover text-white shadow-fun-orange active:translate-y-1 cursor-pointer"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                className="w-full py-3.5 rounded-2xl bg-clicky-orange hover:bg-clicky-orange-hover disabled:opacity-50 text-white font-black text-sm shadow-fun-orange active:translate-y-1 transition-all flex items-center justify-center gap-2"
+              >
+                <span>Confirm Decision</span>
+                <CheckCircle2 className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Feedback & Learning Lesson (after submit) */}
+          <AnimatePresence>
+            {hasSubmitted && chosenOption && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`mt-4 p-4 rounded-2xl border-2 ${
+                  chosenOption.isCorrect
+                    ? "bg-emerald-50 border-emerald-300 text-emerald-950"
+                    : "bg-amber-50 border-amber-300 text-amber-950"
                 }`}
               >
-                Confirm My Choice
-              </button>
-            ) : null}
-          </div>
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 mt-0.5">
+                    <Mascot
+                      size="sm"
+                      mood={chosenOption.isCorrect ? "cheer" : "thinking"}
+                      animate={false}
+                    />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center gap-1.5 font-black text-xs uppercase">
+                      {chosenOption.isCorrect ? (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                          <span className="text-emerald-700">Excellent Choice! (+{scenario.xpReward} XP)</span>
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="w-4 h-4 text-amber-600" />
+                          <span className="text-amber-800">Safety Lesson Learned! (+{Math.round(scenario.xpReward * 0.3)} XP)</span>
+                        </>
+                      )}
+                    </div>
+                    <p className="text-xs sm:text-sm font-semibold leading-relaxed">
+                      {chosenOption.feedback}
+                    </p>
+
+                    <div className="mt-2 pt-2 border-t border-current/20 text-xs font-bold">
+                      <strong>💡 Safety Takeaway:</strong> {chosenOption.safetyLesson}
+                    </div>
+
+                    <div className="pt-3">
+                      <button
+                        type="button"
+                        onClick={handleNext}
+                        className="w-full py-3 rounded-xl bg-clicky-navy hover:bg-clicky-navy-dark text-white font-black text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2"
+                      >
+                        <span>
+                          {currentIndex + 1 < game.scenarios.length ? "Next Scenario" : "Complete Mission"}
+                        </span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-
-        {/* Feedback Panel */}
-        <AnimatePresence>
-          {hasSubmitted && chosenOption && (
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`p-5 sm:p-6 border-t-2 ${
-                chosenOption.isCorrect
-                  ? "bg-emerald-50/70 border-emerald-300"
-                  : "bg-amber-50/80 border-amber-300"
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5">
-                  <Mascot
-                    size="sm"
-                    mood={chosenOption.isCorrect ? "happy" : "thinking"}
-                  />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span
-                      className={`text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                        chosenOption.isCorrect
-                          ? "bg-emerald-200 text-emerald-900"
-                          : "bg-amber-200 text-amber-900"
-                      }`}
-                    >
-                      {chosenOption.isCorrect ? "Great Choice!" : "Learning Moment"}
-                    </span>
-                    <span className="text-xs font-bold text-clicky-muted">
-                      {chosenOption.isCorrect ? `+${scenario.xpReward} XP` : `+${Math.round(scenario.xpReward * 0.3)} XP`}
-                    </span>
-                  </div>
-
-                  <p className="text-sm font-bold text-clicky-navy leading-relaxed">
-                    {chosenOption.feedback}
-                  </p>
-
-                  <div className="mt-2.5 p-3 rounded-xl bg-white border border-gray-200/80 text-xs text-clicky-text font-semibold flex items-start gap-2">
-                    <span className="font-black text-clicky-orange shrink-0">
-                      Golden Safety Rule:
-                    </span>
-                    <span>{scenario.safetyConcept}</span>
-                  </div>
-
-                  <div className="mt-4 flex justify-end">
-                    <button
-                      onClick={handleNext}
-                      className="px-6 py-2.5 rounded-xl bg-clicky-navy hover:bg-clicky-navy-dark text-white font-black text-sm transition-all flex items-center gap-2 shadow-sm"
-                    >
-                      <span>
-                        {currentIndex + 1 < game.scenarios.length
-                          ? "Next Scenario"
-                          : "View My Rewards"}
-                      </span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </motion.div>
     </div>
   );

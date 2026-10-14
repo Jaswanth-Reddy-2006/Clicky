@@ -3,9 +3,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-interface MascotProps {
-  size?: "sm" | "md" | "lg" | "xl";
+export interface MascotProps {
+  size?: "sm" | "md" | "lg" | "xl" | "2xl";
   mood?: "happy" | "detective" | "warning" | "thinking" | "cheer";
+  accessory?: "none" | "detective-cap" | "superhero-cape" | "cyber-goggles" | "space-helmet";
+  colorTheme?: "classic-blue" | "mint-green" | "sunny-yellow" | "sunset-orange";
   className?: string;
   animate?: boolean;
 }
@@ -13,6 +15,8 @@ interface MascotProps {
 export const Mascot: React.FC<MascotProps> = ({
   size = "md",
   mood = "happy",
+  accessory = "none",
+  colorTheme = "classic-blue",
   className = "",
   animate = true,
 }) => {
@@ -21,14 +25,45 @@ export const Mascot: React.FC<MascotProps> = ({
     md: "w-16 h-16",
     lg: "w-24 h-24",
     xl: "w-36 h-36",
+    "2xl": "w-48 h-48",
   };
+
+  const themeColors = {
+    "classic-blue": {
+      outer: "#344D78",
+      inner: "#EDF4FF",
+      ears: "#8FC8F2",
+      cheeks: "#A9DCCB",
+    },
+    "mint-green": {
+      outer: "#25634D",
+      inner: "#D8F3EB",
+      ears: "#A9DCCB",
+      cheeks: "#8FC8F2",
+    },
+    "sunny-yellow": {
+      outer: "#9A7312",
+      inner: "#FEF9E2",
+      ears: "#F6D84A",
+      cheeks: "#E9A15A",
+    },
+    "sunset-orange": {
+      outer: "#9C4215",
+      inner: "#FBE6D3",
+      ears: "#E9A15A",
+      cheeks: "#F6D84A",
+    },
+  };
+
+  const colors = themeColors[colorTheme] || themeColors["classic-blue"];
+  const activeAccessory = accessory !== "none" ? accessory : mood === "detective" ? "detective-cap" : "none";
 
   const getEyeExpression = () => {
     switch (mood) {
       case "detective":
         return (
           <>
-            {/* Left Eye: Squinting slightly */}
+            {/* Left Eye: Focused Squint */}
             <circle cx="38" cy="46" r="5" fill="#25344D" />
             <circle cx="40" cy="44" r="2" fill="#FFFFFF" />
             {/* Right Eye: Magnifying Glass Monocle */}
@@ -110,42 +145,79 @@ export const Mascot: React.FC<MascotProps> = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      {/* Superhero Cape Background */}
+      {activeAccessory === "superhero-cape" && (
+        <g>
+          <path d="M 18 36 C 4 58 8 88 22 96 C 18 78 22 55 26 40 Z" fill="#E53E3E" />
+          <path d="M 82 36 C 96 58 92 88 78 96 C 82 78 78 55 74 40 Z" fill="#E53E3E" />
+        </g>
+      )}
+
       {/* Friendly Shield Body */}
       <path
         d="M 50 8 C 72 8 88 18 88 42 C 88 68 50 92 50 92 C 50 92 12 68 12 42 C 12 18 28 8 50 8 Z"
-        fill="#344D78"
+        fill={colors.outer}
       />
       {/* Shield Inner Face Plate */}
       <path
         d="M 50 14 C 68 14 82 22 82 43 C 82 64 50 85 50 85 C 50 85 18 64 18 43 C 18 22 32 14 50 14 Z"
-        fill="#EDF4FF"
+        fill={colors.inner}
       />
+
       {/* Antenna / Golden Star Crest */}
       <circle cx="50" cy="9" r="6" fill="#F6D84A" stroke="#25344D" strokeWidth="1.5" />
       <path
         d="M 50 4 L 51.5 7.5 L 55 8 L 52.5 10.5 L 53 14 L 50 12 L 47 14 L 47.5 10.5 L 45 8 L 48.5 7.5 Z"
         fill="#FFFFFF"
       />
+
       {/* Ear Discs / Radio Ears */}
-      <circle cx="14" cy="42" r="5" fill="#8FC8F2" stroke="#344D78" strokeWidth="2" />
-      <circle cx="86" cy="42" r="5" fill="#8FC8F2" stroke="#344D78" strokeWidth="2" />
+      <circle cx="14" cy="42" r="5" fill={colors.ears} stroke={colors.outer} strokeWidth="2" />
+      <circle cx="86" cy="42" r="5" fill={colors.ears} stroke={colors.outer} strokeWidth="2" />
 
       {/* Cheeks */}
-      <ellipse cx="30" cy="54" rx="4" ry="2.5" fill="#A9DCCB" fillOpacity="0.8" />
-      <ellipse cx="70" cy="54" rx="4" ry="2.5" fill="#A9DCCB" fillOpacity="0.8" />
+      <ellipse cx="30" cy="54" rx="4" ry="2.5" fill={colors.cheeks} fillOpacity="0.8" />
+      <ellipse cx="70" cy="54" rx="4" ry="2.5" fill={colors.cheeks} fillOpacity="0.8" />
 
       {/* Eyes & Mouth */}
       {getEyeExpression()}
       {getMouthExpression()}
 
-      {/* Detective Hat or Sparkles if applicable */}
-      {mood === "detective" && (
-        <path
-          d="M 28 20 Q 50 8 72 20 L 76 24 Q 50 18 24 24 Z"
-          fill="#E9A15A"
-          stroke="#25344D"
-          strokeWidth="2"
-        />
+      {/* Cyber Goggles Accessory */}
+      {activeAccessory === "cyber-goggles" && (
+        <g>
+          <rect x="25" y="38" width="50" height="15" rx="5" fill="#00E5FF" fillOpacity="0.85" stroke="#00838F" strokeWidth="2" />
+          <line x1="30" y1="45" x2="70" y2="45" stroke="#FFFFFF" strokeWidth="1" strokeDasharray="3 2" />
+          <line x1="20" y1="45" x2="25" y2="45" stroke="#25344D" strokeWidth="2" />
+          <line x1="75" y1="45" x2="80" y2="45" stroke="#25344D" strokeWidth="2" />
+        </g>
+      )}
+
+      {/* Space Helmet Visor Accessory */}
+      {activeAccessory === "space-helmet" && (
+        <g>
+          <path
+            d="M 50 10 C 74 10 90 22 90 44 C 90 68 50 90 50 90 C 50 90 10 68 10 44 C 10 22 26 10 50 10 Z"
+            fill="none"
+            stroke="#8FC8F2"
+            strokeWidth="3.5"
+            strokeDasharray="14 4"
+          />
+          <path d="M 28 24 Q 40 18 55 20" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.8" />
+        </g>
+      )}
+
+      {/* Detective Hat Accessory */}
+      {activeAccessory === "detective-cap" && (
+        <g>
+          <path
+            d="M 24 22 Q 50 8 76 22 L 80 26 Q 50 18 20 26 Z"
+            fill="#E9A15A"
+            stroke="#25344D"
+            strokeWidth="2"
+          />
+          <circle cx="50" cy="18" r="3" fill="#F6D84A" stroke="#25344D" strokeWidth="1" />
+        </g>
       )}
     </svg>
   );

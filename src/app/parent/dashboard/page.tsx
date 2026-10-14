@@ -13,6 +13,10 @@ import {
   ArrowRight,
   ShieldCheck,
   Link2,
+  HeartHandshake,
+  MessageSquare,
+  BookOpen,
+  Check,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -26,11 +30,40 @@ import {
   Line,
 } from "recharts";
 import { ParentOverviewData } from "@/types";
+import { playSound } from "@/lib/utils";
 
 export default function ParentDashboardPage() {
   const [data, setData] = useState<ParentOverviewData | null>(null);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+
+  // Feature D: Family Missions state
+  const [familyMissions, setFamilyMissions] = useState([
+    {
+      id: "fm-1",
+      title: "Agree on a secret family verification phrase",
+      desc: "Choose a memorable safe word (like 'Blue Kangaroo') to protect against AI voice-clone phone calls.",
+      completed: true,
+    },
+    {
+      id: "fm-2",
+      title: "Discuss what to do after accidentally clicking a weird link",
+      desc: "Reinforce that making an honest mistake is okay, and closing the tab + telling an adult immediately prevents account loss.",
+      completed: true,
+    },
+    {
+      id: "fm-3",
+      title: "Identify 3 pieces of info that must never be public",
+      desc: "Review why home address, school name, and current location tags should always remain off public profiles.",
+      completed: false,
+    },
+    {
+      id: "fm-4",
+      title: "Practice muting and reporting a toxic gamer",
+      desc: "Walk through how the built-in game mute button works so your child knows how to handle voice chat toxicity.",
+      completed: false,
+    },
+  ]);
 
   useEffect(() => {
     setMounted(true);
@@ -51,6 +84,13 @@ export default function ParentDashboardPage() {
     }
   };
 
+  const toggleMission = (id: string) => {
+    playSound("click");
+    setFamilyMissions((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, completed: !m.completed } : m))
+    );
+  };
+
   if (!mounted || loading || !data) {
     return (
       <div className="p-8 text-center text-xs font-bold text-gray-500 animate-pulse">
@@ -68,6 +108,8 @@ export default function ParentDashboardPage() {
     score: tp.scorePercentage,
     missions: tp.missionsCompleted,
   }));
+
+  const completedMissionsCount = familyMissions.filter((m) => m.completed).length;
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
@@ -141,58 +183,108 @@ export default function ParentDashboardPage() {
           </span>
         </div>
 
-        {/* Completed Missions */}
+        {/* Missions Completed */}
         <div className="p-5 rounded-2xl bg-white border border-gray-200 shadow-2xs">
           <span className="text-[11px] font-black uppercase text-gray-400 tracking-wider">
-            Missions Completed
+            Completed Scenarios
           </span>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-2xl sm:text-3xl font-black text-gray-900">
+            <span className="text-2xl sm:text-3xl font-black text-emerald-600">
               {data.totalCompletedMissions}
             </span>
-            <span className="text-xs font-bold text-gray-400">Scenarios</span>
+            <span className="text-xs font-bold text-gray-400">of 48 missions</span>
           </div>
           <span className="text-[11px] font-semibold text-gray-500 block mt-1">
-            Across 8 safety categories
+            Across 8 safety domains
           </span>
         </div>
 
         {/* Estimated Learning Time */}
         <div className="p-5 rounded-2xl bg-white border border-gray-200 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black uppercase text-gray-400 tracking-wider">
-              Learning Practice
-            </span>
-            <span className="text-[10px] text-gray-400 font-medium">Estimated</span>
-          </div>
+          <span className="text-[11px] font-black uppercase text-gray-400 tracking-wider">
+            Estimated Learning Time
+          </span>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-2xl sm:text-3xl font-black text-emerald-600">
-              ~{data.estimatedLearningMinutes}
+            <span className="text-2xl sm:text-3xl font-black text-clicky-orange">
+              {data.estimatedLearningMinutes}
             </span>
-            <span className="text-xs font-bold text-gray-400">Minutes</span>
+            <span className="text-xs font-bold text-gray-400">minutes total</span>
           </div>
-          <span className="text-[11px] font-semibold text-emerald-600 block mt-1">
-            Active 3 days this week
+          <span className="text-[11px] font-semibold text-clicky-navy block mt-1">
+            Avg ~15 min daily session
           </span>
         </div>
       </div>
 
-      {/* Safety Topic Mastery Chart & Weekly Activity Grid */}
+      {/* FEATURE D: FAMILY DISCUSSION MISSIONS (Interactive Parent & Child checkoff) */}
+      <div className="p-6 rounded-3xl bg-white border border-gray-200 shadow-card space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+              <HeartHandshake className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-black text-gray-900 text-base">
+                Family Safety Discussion Missions
+              </h3>
+              <p className="text-xs text-gray-500 font-medium">
+                Short guided activities for parents and kids to complete together at dinner or in the car
+              </p>
+            </div>
+          </div>
+
+          <span className="text-xs font-black px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 self-start sm:self-auto">
+            {completedMissionsCount} of 4 Completed
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+          {familyMissions.map((m) => (
+            <div
+              key={m.id}
+              onClick={() => toggleMission(m.id)}
+              className={`p-4 rounded-2xl border-2 flex items-start gap-3.5 cursor-pointer transition-all ${
+                m.completed
+                  ? "bg-emerald-50/60 border-emerald-300 text-emerald-950"
+                  : "bg-gray-50 border-gray-200 hover:bg-gray-100 text-gray-700"
+              }`}
+            >
+              <div
+                className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5 border ${
+                  m.completed
+                    ? "bg-emerald-500 border-emerald-500 text-white"
+                    : "bg-white border-gray-300 text-transparent"
+                }`}
+              >
+                <Check className="w-4 h-4 stroke-[3]" />
+              </div>
+              <div>
+                <h5 className="font-black text-xs sm:text-sm leading-snug">{m.title}</h5>
+                <p className="text-[11px] font-medium text-gray-500 mt-0.5 leading-relaxed">
+                  {m.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Analytics Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Bar Chart of Topic Scores */}
+        {/* Left: Topic Mastery Bar Chart */}
         <div className="lg:col-span-7 p-6 rounded-3xl bg-white border border-gray-200 shadow-2xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="font-black text-gray-900 text-base">
-                  Safety Topic Accuracy & Mastery
+                  Safety Topic Mastery Scores
                 </h3>
                 <p className="text-xs text-gray-500 font-medium">
-                  Average accuracy percentage across each online safety realm
+                  Percentage accuracy across all eight digital topics
                 </p>
               </div>
-              <span className="text-xs font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                Avg: 75%
+              <span className="text-xs font-bold text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
+                Live Sync
               </span>
             </div>
 
@@ -255,7 +347,7 @@ export default function ParentDashboardPage() {
         </div>
       </div>
 
-      {/* Recommendations & Discussion Prompts Section */}
+      {/* Constructive Recommendations Section */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-black text-gray-900 text-lg">
@@ -314,6 +406,39 @@ export default function ParentDashboardPage() {
           ))}
         </div>
       </div>
+
+      {/* Recent Learning Activity Timeline */}
+      {data.recentActivities && data.recentActivities.length > 0 && (
+        <div className="p-6 rounded-3xl bg-white border border-gray-200 shadow-card">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-black text-gray-900 text-base">
+              Recent Child Mission Activity
+            </h3>
+            <span className="text-xs text-gray-400 font-bold">Live Synced</span>
+          </div>
+
+          <div className="divide-y divide-gray-100">
+            {data.recentActivities.slice(0, 5).map((act) => (
+              <div key={act.id} className="py-3 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl p-2 rounded-xl bg-clicky-pale border border-clicky-sky/30">
+                    🎮
+                  </span>
+                  <div>
+                    <h5 className="font-black text-xs sm:text-sm text-gray-900">{act.gameTitle}</h5>
+                    <span className="text-[11px] text-gray-500 font-medium">{act.topic}</span>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <span className="text-xs font-black text-emerald-600 block">{act.score}% Score</span>
+                  <span className="text-[10px] font-bold text-clicky-orange">+{act.xpEarned} XP</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

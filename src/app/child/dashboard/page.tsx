@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
   Flame,
@@ -15,10 +16,54 @@ import {
   TrendingUp,
   Shield,
   HelpCircle,
+  Lightbulb,
+  Lock,
+  HeartHandshake,
+  ShieldAlert,
+  Zap,
 } from "lucide-react";
 import { Mascot } from "@/components/common/Mascot";
 import { GAMES_DATA } from "@/lib/data/games-data";
-import { getLevelProgress } from "@/lib/utils";
+import { getLevelProgress, playSound } from "@/lib/utils";
+
+// Power-Up Definitions
+const POWER_UPS = [
+  {
+    id: "pw-pause",
+    name: "Pause Before You Click",
+    desc: "Take 3 seconds to examine weird links and sender URLs.",
+    icon: "⏸️",
+    unlocked: true,
+  },
+  {
+    id: "pw-adult",
+    name: "Check With a Trusted Adult",
+    desc: "Always ask when an app asks for credit cards or money.",
+    icon: "🤝",
+    unlocked: true,
+  },
+  {
+    id: "pw-password",
+    name: "Never Share Passwords",
+    desc: "Keep your secret codes locked even from best friends.",
+    icon: "🔐",
+    unlocked: true,
+  },
+  {
+    id: "pw-verify",
+    name: "Verify Through Another Channel",
+    desc: "Call a family member directly if someone claims an emergency.",
+    icon: "📞",
+    unlocked: true,
+  },
+  {
+    id: "pw-kindness",
+    name: "Be Kind Online",
+    desc: "Support victims of cyberbullying and don't forward hate.",
+    icon: "💖",
+    unlocked: false,
+  },
+];
 
 export default function ChildDashboardPage() {
   const [profile, setProfile] = useState<{
@@ -27,18 +72,37 @@ export default function ChildDashboardPage() {
     levelTitle: string;
     xp: number;
     currentStreak: number;
+    mascotAccessory?: any;
+    mascotColorTheme?: any;
   }>({
     name: "Alex",
     level: 2,
     levelTitle: "Safety Scout",
     xp: 480,
     currentStreak: 3,
+    mascotAccessory: "detective-cap",
+    mascotColorTheme: "classic-blue",
   });
 
   const [loading, setLoading] = useState(true);
 
+  // Daily Mystery State
+  const [dailyAnswered, setDailyAnswered] = useState(false);
+  const [dailyChoice, setDailyChoice] = useState<number | null>(null);
+  const [dailyBonusClaimed, setDailyBonusClaimed] = useState(false);
+
   useEffect(() => {
     fetchProfile();
+    // Load local customization preferences if present
+    const savedAccessory = localStorage.getItem("clicky_mascot_accessory");
+    const savedTheme = localStorage.getItem("clicky_mascot_theme");
+    if (savedAccessory || savedTheme) {
+      setProfile((prev) => ({
+        ...prev,
+        mascotAccessory: savedAccessory || prev.mascotAccessory,
+        mascotColorTheme: savedTheme || prev.mascotColorTheme,
+      }));
+    }
   }, []);
 
   const fetchProfile = async () => {
@@ -46,18 +110,32 @@ export default function ChildDashboardPage() {
       const res = await fetch("/api/progress");
       const data = await res.json();
       if (data.success && data.childProfile) {
-        setProfile({
+        setProfile((prev) => ({
+          ...prev,
           name: data.childProfile.name,
           level: data.childProfile.level,
           levelTitle: data.childProfile.levelTitle,
           xp: data.childProfile.xp,
           currentStreak: data.childProfile.currentStreak,
-        });
+        }));
       }
     } catch {
-      // Use defaults if demo state
+      // Use defaults
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDailyAnswer = (index: number) => {
+    if (dailyAnswered) return;
+    setDailyChoice(index);
+    setDailyAnswered(true);
+    if (index === 1) {
+      playSound("correct");
+      setDailyBonusClaimed(true);
+      setProfile((prev) => ({ ...prev, xp: prev.xp + 50 }));
+    } else {
+      playSound("incorrect");
     }
   };
 
@@ -67,10 +145,16 @@ export default function ChildDashboardPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
-      {/* Welcome Banner */}
+      {/* Adventure Hero Welcome Banner */}
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-clicky-navy via-clicky-navy to-clicky-navy-dark text-white relative overflow-hidden shadow-card">
-        <div className="absolute right-4 -bottom-6 opacity-20 sm:opacity-30 pointer-events-none select-none">
-          <Mascot size="xl" mood="cheer" animate={false} />
+        {/* Animated Custom Mascot Preview in Corner */}
+        <div className="absolute right-3 -bottom-5 sm:right-6 sm:-bottom-4 opacity-90 select-none">
+          <Mascot
+            size="xl"
+            mood="cheer"
+            accessory={profile.mascotAccessory || "detective-cap"}
+            colorTheme={profile.mascotColorTheme || "classic-blue"}
+          />
         </div>
 
         <div className="relative z-10 max-w-xl space-y-3">
@@ -83,7 +167,7 @@ export default function ChildDashboardPage() {
             Hey, {profile.name}! Ready for today&apos;s adventure?
           </h1>
 
-          <p className="text-xs sm:text-sm text-clicky-sky-light font-medium leading-relaxed">
+          <p className="text-xs sm:text-sm text-clicky-sky-light font-medium leading-relaxed max-w-lg">
             Cyber villains are testing new tricks. Put on your detective badge, practice safe choices, and protect the Clicky universe!
           </p>
 
@@ -103,13 +187,20 @@ export default function ChildDashboardPage() {
               <Bot className="w-4 h-4 text-clicky-yellow" />
               <span>Ask KindBot AI</span>
             </Link>
+
+            <Link
+              href="/child/profile"
+              className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-clicky-yellow font-black text-xs sm:text-sm border border-white/30 transition-all flex items-center gap-1.5"
+            >
+              <span>Customize Outfit</span>
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Stats & Daily Challenge Grid */}
+      {/* KPI Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* XP Level Progress Card */}
+        {/* Level XP Progress Card */}
         <div className="p-5 rounded-3xl bg-white border border-clicky-border shadow-card flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-3">
@@ -164,7 +255,7 @@ export default function ChildDashboardPage() {
             </div>
 
             <p className="text-xs text-clicky-muted font-medium mt-1">
-              Awesome consistency! Completing one mission every day builds lifelong online safety instincts.
+              Awesome consistency! Completing one mission every day builds lifelong safety reflexes.
             </p>
           </div>
 
@@ -173,35 +264,165 @@ export default function ChildDashboardPage() {
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Today&apos;s goal active</span>
             </span>
-            <span className="text-clicky-orange font-black">+25 XP bonus</span>
+            <span className="text-clicky-orange font-black">+25 XP streak bonus</span>
           </div>
         </div>
 
-        {/* Daily Quest Card */}
-        <div className="p-5 rounded-3xl bg-gradient-to-br from-clicky-yellow-pale to-white border border-clicky-yellow/60 shadow-card flex flex-col justify-between">
+        {/* World Quest Map Quick Entry Card */}
+        <div className="p-5 rounded-3xl bg-gradient-to-br from-clicky-pale to-white border border-clicky-sky/50 shadow-card flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-black uppercase tracking-wider text-amber-800 bg-clicky-yellow/40 px-2 py-0.5 rounded-full">
-                Daily Challenge
+              <span className="text-[11px] font-black uppercase tracking-wider text-clicky-navy bg-clicky-sky/30 px-2 py-0.5 rounded-full">
+                Interactive Journey
               </span>
-              <span className="text-xs font-black text-clicky-orange">+50 XP</span>
+              <Compass className="w-4 h-4 text-clicky-navy" />
             </div>
 
             <h4 className="font-black text-clicky-navy text-sm mt-1">
-              Phishing Detective Mission
+              The 8 Realm World Map
             </h4>
             <p className="text-xs text-clicky-muted font-semibold mt-1 leading-relaxed">
-              Complete Scenario 1 in Scam Detective without tapping any suspicious links!
+              Explore all 8 safety worlds, view stars earned, and conquer each cyber territory!
             </p>
           </div>
 
           <Link
-            href="/child/games/scam-detective"
-            className="mt-4 w-full py-2 rounded-xl bg-clicky-navy hover:bg-clicky-navy-dark text-white font-black text-xs flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+            href="/child/adventures"
+            className="mt-4 w-full py-2.5 rounded-xl bg-clicky-navy hover:bg-clicky-navy-dark text-white font-black text-xs flex items-center justify-center gap-1.5 transition-colors shadow-xs"
           >
-            <span>Start Challenge</span>
+            <span>Open Adventure Map</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
+        </div>
+      </div>
+
+      {/* FEATURE C: DAILY SAFETY MYSTERY (Interactive directly on dashboard) */}
+      <div className="p-6 rounded-3xl bg-gradient-to-br from-clicky-yellow-pale via-white to-amber-50/50 border-2 border-clicky-yellow/80 shadow-card">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-2xl bg-clicky-yellow text-clicky-navy-dark flex items-center justify-center text-xl font-black shadow-xs">
+              ⚡
+            </div>
+            <div>
+              <span className="text-[11px] font-black uppercase tracking-wider text-amber-800">
+                Daily Mystery Challenge
+              </span>
+              <h3 className="text-base sm:text-lg font-black text-clicky-navy leading-snug">
+                The Tricky &ldquo;Account Verification&rdquo; Pop-Up
+              </h3>
+            </div>
+          </div>
+
+          <span className="text-xs font-black px-3 py-1 rounded-full bg-clicky-orange text-white shadow-2xs self-start sm:self-auto">
+            +50 Bonus XP
+          </span>
+        </div>
+
+        <p className="text-xs sm:text-sm text-clicky-text font-semibold mb-4 leading-relaxed bg-white/80 p-3 rounded-2xl border border-amber-200">
+          A pop-up in your browser flashes: &ldquo;WARNING! Your account will be banned in 60 seconds unless you type your parent&apos;s phone number here.&rdquo; What is the safe hero choice?
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button
+            onClick={() => handleDailyAnswer(0)}
+            disabled={dailyAnswered}
+            className={`p-3.5 rounded-2xl border-2 text-left text-xs font-bold transition-all ${
+              dailyAnswered
+                ? dailyChoice === 0
+                  ? "bg-red-50 border-red-300 text-red-950 font-black"
+                  : "bg-gray-50 border-gray-200 opacity-60"
+                : "bg-white border-clicky-border hover:border-clicky-navy hover:bg-clicky-pale/40 text-clicky-navy"
+            }`}
+          >
+            A: Type the number fast to save your account before the timer expires.
+          </button>
+
+          <button
+            onClick={() => handleDailyAnswer(1)}
+            disabled={dailyAnswered}
+            className={`p-3.5 rounded-2xl border-2 text-left text-xs font-bold transition-all ${
+              dailyAnswered
+                ? "bg-emerald-50 border-emerald-400 text-emerald-950 font-black ring-2 ring-emerald-300"
+                : "bg-white border-clicky-border hover:border-clicky-navy hover:bg-clicky-pale/40 text-clicky-navy"
+            }`}
+          >
+            B: Close the browser tab immediately; countdown timers are fake scare tricks.
+          </button>
+        </div>
+
+        {dailyAnswered && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className={`mt-4 p-3.5 rounded-2xl text-xs font-semibold leading-relaxed border ${
+              dailyChoice === 1
+                ? "bg-emerald-50 border-emerald-300 text-emerald-950"
+                : "bg-amber-50 border-amber-300 text-amber-950"
+            }`}
+          >
+            {dailyChoice === 1 ? (
+              <div className="flex items-center gap-2 font-bold">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Brilliant move! You spotted the urgency scare scam and earned +50 XP!</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 font-bold">
+                <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>Good lesson! Real companies never use scary countdown timers to pressure you into typing numbers.</span>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </div>
+
+      {/* FEATURE B: COLLECTIBLE SAFETY POWER-UPS RACK */}
+      <div className="p-6 rounded-3xl bg-white border border-clicky-border shadow-card">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Zap className="w-5 h-5 text-clicky-yellow fill-clicky-yellow" />
+              <h3 className="text-lg font-black text-clicky-navy">
+                Your Safety Power-Ups
+              </h3>
+            </div>
+            <p className="text-xs text-clicky-muted font-bold mt-0.5">
+              Collectible learning shields unlocked through your mission choices
+            </p>
+          </div>
+          <span className="text-xs font-black text-clicky-orange bg-clicky-orange-light/30 px-3 py-1 rounded-full border border-clicky-orange/30">
+            4 / 5 Collected
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          {POWER_UPS.map((pw) => (
+            <div
+              key={pw.id}
+              className={`p-3.5 rounded-2xl border-2 flex flex-col justify-between transition-all ${
+                pw.unlocked
+                  ? "bg-gradient-to-b from-clicky-pale/80 to-white border-clicky-sky/60 shadow-2xs"
+                  : "bg-gray-50 border-dashed border-gray-200 opacity-60"
+              }`}
+            >
+              <div>
+                <span className="text-2xl mb-1.5 block">{pw.icon}</span>
+                <h5 className="font-black text-clicky-navy text-xs leading-snug">
+                  {pw.name}
+                </h5>
+                <p className="text-[11px] text-clicky-muted font-medium mt-1 leading-tight">
+                  {pw.desc}
+                </p>
+              </div>
+
+              <div className="mt-3 pt-2 border-t border-gray-100 text-[10px] font-black uppercase">
+                {pw.unlocked ? (
+                  <span className="text-emerald-600">✓ Active Power</span>
+                ) : (
+                  <span className="text-gray-400">🔒 Unlock in Kindness Realm</span>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -233,7 +454,7 @@ export default function ChildDashboardPage() {
         </Link>
       </div>
 
-      {/* Game Worlds Quick Arcade Grid */}
+      {/* Safety Realms Quick Arcade Grid */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -249,7 +470,7 @@ export default function ChildDashboardPage() {
             href="/child/games"
             className="text-xs font-black text-clicky-orange hover:underline flex items-center gap-1"
           >
-            <span>View All 8</span>
+            <span>View All 8 Games</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

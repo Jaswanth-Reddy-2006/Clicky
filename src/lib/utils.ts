@@ -127,7 +127,9 @@ export function getAudioMuted(): boolean {
   }
 }
 
-export function playSound(type: "click" | "correct" | "incorrect" | "celebrate" | "levelUp") {
+export function playSound(
+  type: "click" | "correct" | "incorrect" | "celebrate" | "levelUp" | "chime"
+) {
   if (typeof window === "undefined" || getAudioMuted()) return;
 
   try {
@@ -140,7 +142,21 @@ export function playSound(type: "click" | "correct" | "incorrect" | "celebrate" 
 
     const now = audioContext.currentTime;
 
-    if (type === "click") {
+    if (type === "chime") {
+      [659.25, 880, 1046.5].forEach((freq, idx) => {
+        if (!audioContext) return;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+        gain.gain.setValueAtTime(0.08, now + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.25);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start(now + idx * 0.06);
+        osc.stop(now + idx * 0.06 + 0.25);
+      });
+    } else if (type === "click") {
       const osc = audioContext.createOscillator();
       const gain = audioContext.createGain();
       osc.type = "sine";

@@ -10,12 +10,12 @@ export interface KindBotReply {
 }
 
 export const STARTER_QUESTIONS = [
-  "Someone online is asking for my photo. What should I do?",
-  "A person in my video game is being mean and calling me names.",
-  "I clicked a strange link and now I'm worried my device has a virus.",
-  "An AI chatbot told me something that sounds scary or weird.",
-  "Someone sent me a message saying they know my mom or dad.",
-  "How can I tell if a viral video or news story is fake?",
+  "Someone sent me a suspicious link.",
+  "Someone online is being mean to me.",
+  "A stranger wants my photo.",
+  "An AI chatbot told me something strange.",
+  "I feel worried about something online.",
+  "Someone called claiming to know my parents.",
 ];
 
 // Context-aware intents and safety heuristics
@@ -107,6 +107,7 @@ export function generateKindBotResponse(userMessage: string): KindBotReply {
     query.includes("download") ||
     query.includes("free robux") ||
     query.includes("free v-bucks") ||
+    query.includes("coins") ||
     query.includes("gems") ||
     query.includes("password") ||
     query.includes("scam") ||
@@ -114,7 +115,7 @@ export function generateKindBotResponse(userMessage: string): KindBotReply {
   ) {
     return {
       content:
-        "Don't panic! Lots of kids (and adults too!) accidentally click tricky links. The most important thing is what you do next: 1) Close the tab immediately, 2) Do NOT type your password or any codes on that page, and 3) Let a parent know so they can run an antivirus scan. You are NOT in trouble for making an honest mistake.",
+        "Don't panic! Lots of kids (and adults too!) accidentally click tricky links or see fake prize offers. The most important thing is what you do next: 1) Close the tab immediately, 2) Do NOT type your password or any verification codes on that page, and 3) Let a parent know so they can run a quick check. You are NOT in trouble for asking for help.",
       suggestedActions: [
         "Close the suspicious browser tab immediately",
         "Do NOT enter any passwords or verification codes",
@@ -180,7 +181,32 @@ export function generateKindBotResponse(userMessage: string): KindBotReply {
     };
   }
 
-  // 7. Fake news / Misinformation / Viral rumors
+  // 7. General worry / uncomfortable / feeling unsafe
+  if (
+    query.includes("worried") ||
+    query.includes("scared") ||
+    query.includes("uncomfortable") ||
+    query.includes("nervous") ||
+    query.includes("afraid") ||
+    query.includes("creepy")
+  ) {
+    return {
+      content:
+        "It is completely okay to feel worried. If something you saw or experienced online gave you that strange 'uh-oh' feeling in your stomach, trust your instincts! Your intuition is your digital shield. The best move is to step away from the screen for a minute and share what happened with a parent, older sibling, or teacher. You won't get your device taken away for asking about something weird you saw.",
+      suggestedActions: [
+        "Step away from the screen and take three deep breaths",
+        "Tell your parent or a trusted adult what made you feel uneasy",
+        "Remember that uncomfortable content is never your fault",
+        "Explore Kindness Kingdom to recharge your positive energy",
+      ],
+      recommendedGameSlug: "kindness-kingdom",
+      recommendedGameTitle: "Kindness Kingdom",
+      urgencyLevel: "NORMAL",
+      intent: "emotional_safety",
+    };
+  }
+
+  // 8. Fake news / Misinformation / Viral rumors
   if (
     query.includes("fake") ||
     query.includes("fact") ||
@@ -206,15 +232,15 @@ export function generateKindBotResponse(userMessage: string): KindBotReply {
     };
   }
 
-  // 8. General / Fallback supportive educational reply
+  // 9. General / Fallback supportive educational reply
   return {
     content:
       "Hi there! I'm KindBot, your digital safety companion. My mission is to help you explore games, internet apps, and virtual worlds safely and confidently! Whatever you're wondering about—whether it's spotting scams, handling mean chat messages, or protecting your privacy—I'm here to give you helpful tips. What's on your mind today?",
     suggestedActions: [
-      "Ask: 'How do I know if a link is safe?'",
-      "Ask: 'What should I do if a player is bullying me?'",
-      "Ask: 'Can AI chatbots make mistakes?'",
-      "Practice a safety game in the Arcade!",
+      "Ask: 'Someone sent me a suspicious link.'",
+      "Ask: 'Someone online is being mean to me.'",
+      "Ask: 'A stranger wants my photo.'",
+      "Practice a safety game in the Clicky Arcade!",
     ],
     recommendedGameSlug: "scam-detective",
     recommendedGameTitle: "Scam Detective",

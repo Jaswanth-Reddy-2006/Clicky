@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Link2, Sparkles, Key, CheckCircle2, ArrowRight, Copy, RefreshCw } from "lucide-react";
 import { AppLogo } from "@/components/common/AppLogo";
 import { DemoBanner } from "@/components/common/DemoBanner";
+import { playSound } from "@/lib/utils";
 
 export default function PairChildPage() {
   const [activeTab, setActiveTab] = useState<"parent" | "child">("parent");
@@ -40,6 +41,7 @@ export default function PairChildPage() {
   };
 
   const handleCopyCode = () => {
+    playSound("click");
     navigator.clipboard.writeText(generatedCode);
     setCodeCopied(true);
     setTimeout(() => setCodeCopied(false), 2000);
@@ -49,6 +51,7 @@ export default function PairChildPage() {
     e.preventDefault();
     if (!inputCode.trim() || isRedeeming) return;
 
+    playSound("click");
     setIsRedeeming(true);
     setRedemptionResult(null);
 
@@ -60,18 +63,21 @@ export default function PairChildPage() {
       });
       const data = await res.json();
       if (data.success) {
+        playSound("celebrate");
         setRedemptionResult({
           success: true,
           message: data.message || "Successfully paired with parent account!",
         });
         setInputCode("");
       } else {
+        playSound("incorrect");
         setRedemptionResult({
           success: false,
           message: data.error || "Failed to redeem code. Please double-check with parent.",
         });
       }
     } catch {
+      playSound("incorrect");
       setRedemptionResult({
         success: false,
         message: "Network error validating pairing code.",
