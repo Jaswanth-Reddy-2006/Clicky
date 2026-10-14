@@ -19,6 +19,10 @@ export const metadata: Metadata = {
     "cyberbullying prevention",
     "ai safety companion",
   ],
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.ico",
+  },
   authors: [{ name: "Clicky Team" }],
 };
 
